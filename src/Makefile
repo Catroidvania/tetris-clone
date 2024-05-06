@@ -2,8 +2,9 @@
 # created apr 30 2024
 # by catroidvania
 
-SRCS = main.cpp
-OBJS = main.o
+SRCS = main.cpp bitboard.cpp board.cpp
+OBJS = $(SRCS:.cpp=.o)
+CFLAGS = -O2 -Wall -g3
 GPP = g++
 
 
@@ -11,7 +12,7 @@ all: obj
 	${GPP} ${OBJS} -o ${OUTFILE}
 
 obj: ${SRCS}
-	${GPP} -c ${SRCS}
+	${GPP} ${CFLAGS} -c ${SRCS}
 
 clean: ${OBJS}
 	rm ${OBJS}
