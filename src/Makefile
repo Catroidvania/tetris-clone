@@ -4,7 +4,7 @@
 
 SRCS = main.cpp bitboard.cpp board.cpp
 OBJS = $(SRCS:.cpp=.o)
-CFLAGS = -O2 -Wall -g3
+CFLAGS = -std=c++17 -O2 -Wall -g3
 GPP = g++
 
 

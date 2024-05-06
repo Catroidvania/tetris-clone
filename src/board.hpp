@@ -10,6 +10,8 @@
 #define TETRIS_BOARD_HEIGHT 20
 
 #include <vector>
+#include "piece.hpp"
+
 
 // represents the state of each board square
 enum Tile {
@@ -23,7 +25,6 @@ enum Tile {
     LIGHTBLUE,
     MAGENTA
 };
-
 
 
 class Board {
@@ -46,6 +47,8 @@ private:
     unsigned int score = 0;
     unsigned int level = 1;
     unsigned int combo = 0;
+    Piece held, current;
+    std::vector<Piece> queue;
 
 public:
     Game();
