@@ -8,11 +8,16 @@
 
 int main() {
 
-    Board test_board;
-    Piece test_piece = Piece::Piece(J);
+    SDL_Window* window = nullptr;
+    SDL_Surface* windowSurface = nullptr;
+
+    // make sure sdl is initialsed properly
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cout << "Could not initialise SDL!\n" << SDL_GetError() << NL;
+        return -1;
+    }
+
     
-    std::cout << "hai guyy!!\n";
-    std::cout << ":P " << test_piece.getType() << NL;
 
     return 0;
 }

@@ -2,7 +2,7 @@
 # created apr 30 2024
 # by catroidvania
 
-SRCS = main.cpp bitboard.cpp board.cpp
+SRCS = main.cpp bitboard.cpp board.cpp piece.cpp
 OBJS = $(SRCS:.cpp=.o)
 CFLAGS = -std=c++17 -O2 -Wall -g3
 GPP = g++

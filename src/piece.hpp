@@ -3,10 +3,10 @@
  * by catroidvania
  */
 
-#ifndef BOARD_HPP
-#define BOARD_HPP
+#ifndef PIECE_HPP
+#define PIECE_HPP
 
-#include <ctdlib>
+#include <cstdlib>
 #include <ctime>
 
 

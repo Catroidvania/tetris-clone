@@ -8,7 +8,11 @@
 
 #define NL '\n'
 
+#define SCR_WIDTH  640
+#define SCR_HEIGHT 400
+
 #include <iostream>
+#include <SDL.h>
 #include "board.hpp"
 #include "piece.hpp"
 
