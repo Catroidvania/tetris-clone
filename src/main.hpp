@@ -15,5 +15,6 @@
 #include <SDL.h>
 #include "board.hpp"
 #include "piece.hpp"
+#include "asset.hpp"
 
 #endif

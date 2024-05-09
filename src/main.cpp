@@ -8,6 +8,8 @@
 
 int main() {
 
+    // TODO should make these global const*
+    // also move all init stuff into its own func
     SDL_Window* window = nullptr;
     SDL_Surface* windowSurface = nullptr;
     SDL_Event event;
@@ -38,6 +40,8 @@ int main() {
     SDL_FillRect(windowSurface, nullptr, SDL_MapRGB(windowSurface->format, 0, 0, 0));
     SDL_UpdateWindowSurface(window);
 
+    loadAssets();
+
     while (true) {
         SDL_PollEvent(&event);
         
@@ -46,5 +50,11 @@ int main() {
         }
     }
 
+    unloadAssets();
+
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
     return 0;
 }
+
