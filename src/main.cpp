@@ -14,6 +14,8 @@ int main() {
     SDL_Surface* windowSurface = nullptr;
     SDL_Event event;
 
+    Board board;
+
     // make sure sdl is initialsed properly
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cout << "Could not initialise SDL!" << NL;
@@ -45,8 +47,8 @@ int main() {
     while (true) {
         SDL_PollEvent(&event);
 
-        SDL_BlitSurface(IPIECETEXTURE, (SDL_Rect){10, 10, 32, 32}, windowSurface, NULL);
-        
+        board.drawBoard(windowSurface, 0, 0);
+ 
         SDL_UpdateWindowSurface(window);
 
         if (event.type == SDL_QUIT) {

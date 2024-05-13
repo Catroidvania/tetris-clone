@@ -8,9 +8,12 @@
 
 #define TETRIS_BOARD_WIDTH 10
 #define TETRIS_BOARD_HEIGHT 20
+#define POINT(X, Y, W) (Y * W + X)
 
 #include <vector>
+#include <SDL.h>
 #include "piece.hpp"
+#include "asset.hpp"
 
 
 // represents the state of each board square
@@ -35,6 +38,8 @@ protected:
 
 public:
     Board();
+
+    bool drawBoard(SDL_Surface* destSurface, int x, int y);
 
     inline unsigned int getWidth() { return width; }
     inline unsigned int getHeight() { return height; }

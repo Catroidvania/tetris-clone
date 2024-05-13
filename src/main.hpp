@@ -8,8 +8,8 @@
 
 #define NL '\n'
 
-#define SCR_WIDTH  640
-#define SCR_HEIGHT 480
+#define SCR_WIDTH  600
+#define SCR_HEIGHT 640
 
 #include <iostream>
 #include <SDL.h>

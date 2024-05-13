@@ -12,6 +12,8 @@
 #include <string>
 #include <iostream>
 
+#define TILE_SIZE 32
+
 
 extern SDL_Surface  *TPIECETEXTURE, 
                     *LPIECETEXTURE, 
