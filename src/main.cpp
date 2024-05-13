@@ -44,7 +44,11 @@ int main() {
 
     while (true) {
         SDL_PollEvent(&event);
+
+        SDL_BlitSurface(IPIECETEXTURE, (SDL_Rect){10, 10, 32, 32}, windowSurface, NULL);
         
+        SDL_UpdateWindowSurface(window);
+
         if (event.type == SDL_QUIT) {
             break;
         }

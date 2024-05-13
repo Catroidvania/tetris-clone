@@ -3,34 +3,34 @@
  * by catroidvania
  */
 
+#define NL '\n'
 #include "asset.hpp"
 
 
 // textures
-const* SDL_Surface  TPIECETEXTURE = nullptr, 
-                    LPIECETEXTURE = nullptr, 
-                    JPIECETEXTURE = nullptr, 
-                    IPIECETEXTURE = nullptr, 
-                    OPIECETEXTURE = nullptr, 
-                    SPIECETEXTURE = nullptr, 
-                    ZPIECETEXTURE = nullptr,
-                    EMPTYBOARDTEXTURE = nullptr;
+SDL_Surface *TPIECETEXTURE = nullptr, 
+            *LPIECETEXTURE = nullptr, 
+            *JPIECETEXTURE = nullptr, 
+            *IPIECETEXTURE = nullptr, 
+            *OPIECETEXTURE = nullptr, 
+            *SPIECETEXTURE = nullptr, 
+            *ZPIECETEXTURE = nullptr,
+            *EMPTYBOARDTEXTURE = nullptr;
 
 
 // load png function with error checking
-void loadPNG(SDL_Surface* &target, char* filePath) {
+void loadPNG(SDL_Surface* &target, std::string filePath) {
 
     SDL_RWops* file = nullptr;
 
-    file = SDL_RWFromFile(filePath, "r");
+    file = SDL_RWFromFile(filePath.c_str(), "r");
     if (file == nullptr) {
         std::cout << "Could not load " << filePath << "!" << NL;
         std::cerr << SDL_GetError() << NL;
         target = nullptr;
     } else {
-        target = SDL_LoadPNG_RW(file);
+        target = IMG_LoadPNG_RW(file);
     }
-
 }
 
 
@@ -41,28 +41,28 @@ bool loadAssets() {
     SDL_RWops* file = nullptr;
     bool allSuccess = true;
 
-    loadPNG(&LPIECETEXTURE, "assets/l.png");
+    loadPNG(LPIECETEXTURE, "assets/l.png");
     if (LPIECETEXTURE == nullptr) { allSuccess = false; }
 
-    loadPNG(&JPIECETEXTURE, "assets/j.png");
+    loadPNG(JPIECETEXTURE, "assets/j.png");
     if (JPIECETEXTURE == nullptr) { allSuccess = false; }
 
-    loadPNG(&ZPIECETEXTURE, "assets/z.png");
+    loadPNG(ZPIECETEXTURE, "assets/z.png");
     if (ZPIECETEXTURE == nullptr) { allSuccess = false; }
 
-    loadPNG(&SPIECETEXTURE, "assets/s.png");
+    loadPNG(SPIECETEXTURE, "assets/s.png");
     if (SPIECETEXTURE == nullptr) { allSuccess = false; }
 
-    loadPNG(&OPIECETEXTURE, "assets/o.png");
+    loadPNG(OPIECETEXTURE, "assets/o.png");
     if (OPIECETEXTURE == nullptr) { allSuccess = false; }
 
-    loadPNG(&TPIECETEXTURE, "assets/t.png");
+    loadPNG(TPIECETEXTURE, "assets/t.png");
     if (TPIECETEXTURE == nullptr) { allSuccess = false; }
 
-    loadPNG(&IPIECETEXTURE, "assets/i.png");
+    loadPNG(IPIECETEXTURE, "assets/i.png");
     if (IPIECETEXTURE == nullptr) { allSuccess = false; }
 
-    loadPNG(&EMPTYBOARDTEXTURE, "assets/empty.png");
+    loadPNG(EMPTYBOARDTEXTURE, "assets/empty.png");
     if (EMPTYBOARDTEXTURE == nullptr) { allSuccess = false; }
 
     return allSuccess;

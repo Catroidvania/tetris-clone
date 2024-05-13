@@ -7,18 +7,22 @@
 #ifndef ASSET_HPP
 #define ASSET_HPP
 
+#include <SDL.h>
 #include <SDL_image.h>
+#include <string>
+#include <iostream>
 
-extern const* SDL_Surface   TPIECETEXTURE, 
-                            LPIECETEXTURE, 
-                            JPIECETEXTURE, 
-                            IPIECETEXTURE, 
-                            OPIECETEXTURE, 
-                            SPIECETEXTURE, 
-                            ZPIECETEXTURE,
-                            EMPTYBOARDTEXTURE;
 
-void loadPNG(SDL_Surface* &target, char* filePath);
+extern SDL_Surface  *TPIECETEXTURE, 
+                    *LPIECETEXTURE, 
+                    *JPIECETEXTURE, 
+                    *IPIECETEXTURE, 
+                    *OPIECETEXTURE, 
+                    *SPIECETEXTURE, 
+                    *ZPIECETEXTURE,
+                    *EMPTYBOARDTEXTURE;
+
+void loadPNG(SDL_Surface* const &target, std::string filePath);
 bool loadAssets();
 void unloadAssets();
 
