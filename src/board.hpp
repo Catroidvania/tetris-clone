@@ -12,7 +12,6 @@
 
 #include <vector>
 #include <SDL.h>
-#include "piece.hpp"
 #include "asset.hpp"
 
 
@@ -46,21 +45,5 @@ public:
     //inline std::vector<Tile> getBoard() { return board; }
 };
 
-
-class Game : Board {
-private:
-    unsigned int score = 0;
-    unsigned int level = 1;
-    unsigned int combo = 0;
-    Piece held, current;
-    std::vector<Piece> queue;
-
-public:
-    Game();
-
-    inline unsigned int getScore() { return score; }
-    inline unsigned int getLevel() { return level; }
-    inline unsigned int getCombo() { return combo; }
-};
 
 #endif

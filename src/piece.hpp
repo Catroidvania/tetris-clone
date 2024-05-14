@@ -22,7 +22,8 @@ enum PieceType {
     Z = 'Z',
     L = 'L',
     J = 'J',
-    T = 'T'
+    T = 'T',
+    NOPIECE = 'N'
 };
 
 
