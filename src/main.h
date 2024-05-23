@@ -5,9 +5,8 @@
 
 #pragma once
 
-#define WINWIDTH 800
-#define WINHEIGHT 600
-
 #include <SDL.h>
 #include <stdio.h>
+
+#include "app.h"
 

@@ -10,31 +10,14 @@
 int main() {
 
     // declarations
-    SDL_Window* window = NULL;
-    SDL_Surface* window_surface = NULL;
+    Game game;
     SDL_Event event;
 
     // init sdl check
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("no sdl?? more likely than youd think!\n%s\n", SDL_GetError());
-        return -1;
-    }
+    if (init_sdl() < 0) { return -1; }
 
     // create window
-    window = SDL_CreateWindow(  "cetris (CursEd skull TetRomIno Stacking game)",
-                                SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                WINWIDTH, WINHEIGHT,
-                                SDL_WINDOW_SHOWN);
-
-    // window init check
-    if (window == NULL) {
-        printf("alas no window...\n%s\n", SDL_GetError());
-        return -1;
-    }
-
-    // decorate window
-    window_surface = SDL_GetWindowSurface(window);
-    SDL_FillRect( window_surface, NULL, SDL_MapRGB( window_surface->format, 0xFF, 0xFF, 0xFF ) );
+    if (init_game(&game) < 0) { return -1; }
 
     // primitive draw loop
     while (1) {
@@ -44,12 +27,12 @@ int main() {
             break;
         }
         // refresh window
-        SDL_UpdateWindowSurface(window);
+        SDL_UpdateWindowSurface(game.window);
     }
 
     // uninit sdl stuff
-    SDL_DestroyWindow( window );
-    SDL_Quit();
+    free_game(&game);
+    quit_sdl();
 
     return 0;
 }
