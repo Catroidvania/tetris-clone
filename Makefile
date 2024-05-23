@@ -5,7 +5,7 @@
 MAKE = make
 SRCDIR = src
 BINDIR = bin
-OUTFILE = tetris
+OUTFILE = cetris
 
 export OUTFILE
 
