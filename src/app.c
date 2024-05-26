@@ -47,6 +47,8 @@ int init_game(Game* game) {
     // decorate window
     game->window_surface = SDL_GetWindowSurface(game->window);
     SDL_FillRect(game->window_surface, NULL, SDL_MapRGB(game->window_surface->format, 255, 255, 255));
+
+    clear_board(&game->board);
     
     return 0;
 }

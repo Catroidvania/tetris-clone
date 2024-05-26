@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 #include <stdio.h>
+#include "board.h"
 
 #define WINWIDTH 800
 #define WINHEIGHT 600
@@ -19,9 +20,8 @@ typedef struct Application {
     SDL_Window* window;
     SDL_Surface* window_surface;
 
-    // standard tetris board, 10x20 visible area with a 20 row buffer above it
-    // blocks spawn on rows 21 and 22
-    Block blocks[400];
+    // see board.h
+    Board board;
 
 } Game;
 
