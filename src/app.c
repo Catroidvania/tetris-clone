@@ -35,7 +35,7 @@ int init_game(Game* game) {
     game->window = SDL_CreateWindow(
                     "cetris (CursEd skull TetRomIno Stacking game)",
                     SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                    WINWIDTH, WINHEIGHT,
+                    WINDOWWIDTH, WINDOWHEIGHT,
                     SDL_WINDOW_SHOWN);
 
     // window init check
@@ -54,6 +54,7 @@ int init_game(Game* game) {
 }
 
 
+// frees allocated memory in game
 void free_game(Game* game) {
     
     // null pointer check

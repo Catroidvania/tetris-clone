@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include "board.h"
 
-#define WINWIDTH 800
-#define WINHEIGHT 600
+#define WINDOWWIDTH 320
+#define WINDOWHEIGHT 640
 
 
 // contains app stuff

@@ -9,4 +9,6 @@
 #include <stdio.h>
 
 #include "app.h"
+#include "assets.h"
+#include "board.h"
 
