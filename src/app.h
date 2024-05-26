@@ -30,3 +30,4 @@ int init_sdl();
 void quit_sdl();
 int init_game(Game* game);
 void free_game(Game* game);
+

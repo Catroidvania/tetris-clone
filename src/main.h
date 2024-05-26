@@ -11,4 +11,6 @@
 #include "app.h"
 #include "assets.h"
 #include "board.h"
+#include "pieces.h"
+#include "rendering.h"
 

@@ -10,7 +10,7 @@
 int init_sdl() {
     // init sdl check
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("no sdl?? more likely than youd think!\n%s\n", SDL_GetError());
+        printf("no sdl?? more likely than youed think!\n%s\n", SDL_GetError());
         return -1;
     }
     return 0;
@@ -46,8 +46,7 @@ int init_game(Game* game) {
 
     // decorate window
     game->window_surface = SDL_GetWindowSurface(game->window);
-    SDL_FillRect(game->window_surface, NULL, SDL_MapRGB(game->window_surface->format, 255, 255, 255));
-
+    //clear_window(game); // call this in the draw loop
     clear_board(&game->board);
     
     return 0;
