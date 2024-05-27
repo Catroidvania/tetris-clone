@@ -11,7 +11,9 @@ int main() {
     // declarations
     App application;
     SDL_Event event;
-    Piece test_piece;
+
+    int run = 1;
+    int start_ms, end_ms, dt;
 
     // init sdl check
     if (init_sdl() < 0) { return -1; }
@@ -22,88 +24,48 @@ int main() {
     // create window
     if (init_app(&application) < 0) { return -1; }
 
-    // TODO move this into its own thing in app.c or something
-    // primitive draw loop
-    while (1) {
-        // exit on close window button
+    // game loop
+    while (run) {
+        
+        // get time at start of frame
+        start_ms = SDL_GetTicks64();
+
+        // get window events
         SDL_PollEvent(&event);
+
+        // exit on close window button
         if (event.type == SDL_QUIT) {
-            break;
+            run = 0;
         }
 
-        if (event.type == SDL_KEYDOWN) {
-            test_piece = application.game.current_piece; // for checking things
-            switch (event.key.keysym.sym) {
-            case SDLK_LEFT:
-                test_piece.x -= 1;
-                if (!piece_collision(&test_piece, &application.game.board)) { application.game.current_piece = test_piece; }
-                break;
-            case SDLK_RIGHT:
-                test_piece.x += 1;
-                if (!piece_collision(&test_piece, &application.game.board)) { application.game.current_piece = test_piece; }
-                break;
-
-            // TODO for testing, remove later
-            case SDLK_UP:
-                test_piece.y += 1;
-                if (!piece_collision(&test_piece, &application.game.board)) { application.game.current_piece = test_piece; }
-                break;
-            case SDLK_DOWN:
-                test_piece.y -= 1;
-                if (!piece_collision(&test_piece, &application.game.board)) { application.game.current_piece = test_piece; }
-                break;
-            /*
-            case SDLK_1:
-                piece = I_PIECE;
-                break;
-            case SDLK_2:
-                piece = O_PIECE;
-                break;
-            case SDLK_3:
-                piece = J_PIECE;
-                break;
-            case SDLK_4:
-                piece = L_PIECE;
-                break;
-            case SDLK_5:
-                piece = S_PIECE;
-                break;
-            case SDLK_6:
-                piece = T_PIECE;
-                break;
-            case SDLK_7:
-                piece = Z_PIECE;
-                break;
-            */
-
-            case SDLK_x:
-                rotate_piece_right(&application.game.current_piece, &application.game.board);
-                break;
-            case SDLK_z:
-                rotate_piece_left(&application.game.current_piece, &application.game.board);
-                break;
-            }
+        move_current_piece(&application.game, &event);
+        lock_current_piece(&application.game);
+        clear_lines(&application.game);
+        
+        // TODO wipes the board if we cannot spawn a new piece
+        if (piece_collision(&application.game.next_piece, &application.game.board)) {
+            clear_board(&application.game.board);
         }
 
-
-        // piece clearing test
-        test_piece = application.game.current_piece;
-        test_piece.y -= 1;
-        if (piece_collision(&test_piece, &application.game.board)) {
-            solidify_piece(&application.game.current_piece, &application.game.board);
-
-            if (piece_collision(&application.game.next_piece, &application.game.board)) {
-                clear_board(&application.game.board);
-            }
-
-            swap_pieces(&application.game);
-        }
-
-        // refresh window
+        // clear for drawing
         clear_window(&application);
+        
+        // draw stuff
         draw_board(&application.game.board, application.window_surface, 0, 0);
         draw_piece(&application.game.current_piece, application.window_surface, 0, 0);
+
+        // refresh window
         SDL_UpdateWindowSurface(application.window);
+
+        // get time at end of frame
+        end_ms = SDL_GetTicks64();
+        dt = end_ms - start_ms;
+        
+        // wait for next frame so we run at around 60 fps
+        // in reality precision is bad so it alternates between 58.8 and 62.5 fps
+        if (dt <= FRAMEDELAY) {
+            SDL_Delay(FRAMEDELAY - dt);
+        }
     }
 
     // uninit sdl stuff

@@ -68,31 +68,3 @@ void end_app(App* app) {
     app->window = NULL;
     app->window_surface = NULL;
 }
-
-
-// initialises a game of tetris
-int init_game(Game* game) {
-    
-    if (game == NULL) { return -1; }
-
-    clear_board(&game->board);
-
-    // seed initial pieces
-    game->current_piece = randomize_piece(NULL);
-    game->next_piece = randomize_piece(&game->current_piece);
-
-    game->score = 0;
-    game->level = 1;
-
-    return 0;
-}
-
-
-// changes the current to the next piece and generates a new next piece
-void swap_pieces(Game* game) {
-    
-    if (game == NULL) { return; }
-
-    game->current_piece = game->next_piece;
-    game->next_piece = randomize_piece(&game->current_piece);
-}
