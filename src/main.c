@@ -9,9 +9,9 @@
 int main() {
 
     // declarations
-    Game game;
+    App application;
     SDL_Event event;
-    Piece piece, test_piece;
+    Piece test_piece;
 
     // init sdl check
     if (init_sdl() < 0) { return -1; }
@@ -20,18 +20,7 @@ int main() {
     if (load_assets() < 0) { return -1; }
 
     // create window
-    if (init_game(&game) < 0) { return -1; }
-
-    // TODO test stuff
-    piece = T_PIECE;
-
-    game.board.blocks[0] = L;
-    game.board.blocks[4] = J;
-    game.board.blocks[8] = S;
-    game.board.blocks[12] = Z;
-    game.board.blocks[16] = T;
-    game.board.blocks[20] = I;
-    game.board.blocks[24] = O;
+    if (init_app(&application) < 0) { return -1; }
 
     // TODO move this into its own thing in app.c or something
     // primitive draw loop
@@ -43,26 +32,27 @@ int main() {
         }
 
         if (event.type == SDL_KEYDOWN) {
-            test_piece = piece; // for checking things
+            test_piece = application.game.current_piece; // for checking things
             switch (event.key.keysym.sym) {
             case SDLK_LEFT:
                 test_piece.x -= 1;
-                if (!piece_collision(&test_piece, &game.board)) { piece = test_piece; }
+                if (!piece_collision(&test_piece, &application.game.board)) { application.game.current_piece = test_piece; }
                 break;
             case SDLK_RIGHT:
                 test_piece.x += 1;
-                if (!piece_collision(&test_piece, &game.board)) { piece = test_piece; }
+                if (!piece_collision(&test_piece, &application.game.board)) { application.game.current_piece = test_piece; }
                 break;
 
             // TODO for testing, remove later
             case SDLK_UP:
                 test_piece.y += 1;
-                if (!piece_collision(&test_piece, &game.board)) { piece = test_piece; }
+                if (!piece_collision(&test_piece, &application.game.board)) { application.game.current_piece = test_piece; }
                 break;
             case SDLK_DOWN:
                 test_piece.y -= 1;
-                if (!piece_collision(&test_piece, &game.board)) { piece = test_piece; }
+                if (!piece_collision(&test_piece, &application.game.board)) { application.game.current_piece = test_piece; }
                 break;
+            /*
             case SDLK_1:
                 piece = I_PIECE;
                 break;
@@ -84,25 +74,40 @@ int main() {
             case SDLK_7:
                 piece = Z_PIECE;
                 break;
+            */
 
             case SDLK_x:
-                rotate_piece_right(&piece, &game.board);
+                rotate_piece_right(&application.game.current_piece, &application.game.board);
                 break;
             case SDLK_z:
-                rotate_piece_left(&piece, &game.board);
+                rotate_piece_left(&application.game.current_piece, &application.game.board);
                 break;
             }
         }
 
+
+        // piece clearing test
+        test_piece = application.game.current_piece;
+        test_piece.y -= 1;
+        if (piece_collision(&test_piece, &application.game.board)) {
+            solidify_piece(&application.game.current_piece, &application.game.board);
+
+            if (piece_collision(&application.game.next_piece, &application.game.board)) {
+                clear_board(&application.game.board);
+            }
+
+            swap_pieces(&application.game);
+        }
+
         // refresh window
-        clear_window(&game);
-        draw_board(&game.board, game.window_surface, 0, 0);
-        draw_piece(&piece, game.window_surface, 0, 0);
-        SDL_UpdateWindowSurface(game.window);
+        clear_window(&application);
+        draw_board(&application.game.board, application.window_surface, 0, 0);
+        draw_piece(&application.game.current_piece, application.window_surface, 0, 0);
+        SDL_UpdateWindowSurface(application.window);
     }
 
     // uninit sdl stuff
-    free_game(&game);
+    end_app(&application);
     unload_assets();
     quit_sdl();
 

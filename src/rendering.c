@@ -7,8 +7,8 @@
 
 
 // fills the window with white
-void clear_window(Game* game) {
-    SDL_FillRect(game->window_surface, NULL, SDL_MapRGB(game->window_surface->format, 255, 255, 255));
+void clear_window(App* app) {
+    SDL_FillRect(app->window_surface, NULL, SDL_MapRGB(app->window_surface->format, 255, 255, 255));
 }
 
 

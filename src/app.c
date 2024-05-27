@@ -22,46 +22,77 @@ void quit_sdl() {
 }
 
 
-// init game stuff
-int init_game(Game* game) {
+// create a window and stuff
+int init_app(App* app) {
 
     // null pointer check
-    if (game == NULL) { return -1; }
+    if (app == NULL) { return -1; }
 
-    game->window = NULL;
-    game->window_surface = NULL;
+    // seed randomness
+    srand(time(NULL));
+
+    app->window = NULL;
+    app->window_surface = NULL;
 
     // create window
-    game->window = SDL_CreateWindow(
+    app->window = SDL_CreateWindow(
                     "cetris (CursEd skull TetRomIno Stacking game)",
                     SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                     WINDOWWIDTH, WINDOWHEIGHT,
                     SDL_WINDOW_SHOWN);
 
     // window init check
-    if (game->window == NULL) {
+    if (app->window == NULL) {
         printf("alas no window...\n%s\n", SDL_GetError());
         return -1;
     }
 
     // decorate window
-    game->window_surface = SDL_GetWindowSurface(game->window);
+    app->window_surface = SDL_GetWindowSurface(app->window);
     //clear_window(game); // call this in the draw loop
-    clear_board(&game->board);
-    
+    init_game(&app->game);
+
     return 0;
 }
 
 
-// frees allocated memory in game
-void free_game(Game* game) {
+// frees memory related to the window
+void end_app(App* app) {
     
     // null pointer check
-    if (game == NULL) { return; }
+    if (app == NULL) { return; }
 
     // this takes care of window_surface
-    if (game->window != NULL) { SDL_DestroyWindow(game->window); }
+    if (app->window != NULL) { SDL_DestroyWindow(app->window); }
 
-    game->window = NULL;
-    game->window_surface = NULL;
+    app->window = NULL;
+    app->window_surface = NULL;
+}
+
+
+// initialises a game of tetris
+int init_game(Game* game) {
+    
+    if (game == NULL) { return -1; }
+
+    clear_board(&game->board);
+
+    // seed initial pieces
+    game->current_piece = randomize_piece(NULL);
+    game->next_piece = randomize_piece(&game->current_piece);
+
+    game->score = 0;
+    game->level = 1;
+
+    return 0;
+}
+
+
+// changes the current to the next piece and generates a new next piece
+void swap_pieces(Game* game) {
+    
+    if (game == NULL) { return; }
+
+    game->current_piece = game->next_piece;
+    game->next_piece = randomize_piece(&game->current_piece);
 }

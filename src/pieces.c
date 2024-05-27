@@ -167,3 +167,108 @@ void rotate_piece_left(Piece* piece, Board* board) {
         *piece = test_piece;
     }
 }
+
+
+// places a pieces minos on the board
+// it will replace any non blank peices it intersects
+void solidify_piece(Piece* piece, Board* board) {
+
+    if (piece == NULL) { return; }
+    if (board == NULL) { return; }
+
+    for (int i = 0; i < 4; i++) {
+        board->blocks[POINT(piece->x + piece->offsets[i*2], piece->y + piece->offsets[i*2+1], 10)] = piece->type;
+    }
+}
+
+
+// randomises the provided piece
+// if piece is not NULL, will try and avoid generating the same piece as the current one
+Piece randomize_piece(Piece* piece) {
+
+    Piece new_piece;
+    
+    if (piece == NULL) {
+        switch (rand() % 7) {
+        case 0:
+            new_piece = I_PIECE;
+            break;
+        case 1:
+            new_piece = O_PIECE;
+            break;
+        case 2:
+            new_piece = L_PIECE;
+            break;
+        case 3:
+            new_piece = J_PIECE;
+            break;
+        case 4:
+            new_piece = S_PIECE;
+            break;
+        case 5:
+            new_piece = T_PIECE;
+            break;
+        case 6:
+            new_piece = Z_PIECE;
+            break;
+        }
+    } else {
+ 
+        // one higher to emulate the NES tetris randomiser
+        switch (rand() % 8) {
+        case 0:
+            new_piece = I_PIECE;
+            break;
+        case 1:
+            new_piece = O_PIECE;
+            break;
+        case 2:
+            new_piece = L_PIECE;
+            break;
+        case 3:
+            new_piece = J_PIECE;
+            break;
+        case 4:
+            new_piece = S_PIECE;
+            break;
+        case 5:
+            new_piece = T_PIECE;
+            break;
+        case 6:
+            new_piece = Z_PIECE;
+            break;
+        case 7:
+            new_piece = *piece;
+            break;
+        }
+
+        if (new_piece.type == piece->type) {
+            // the compiler can figure this crap out lmao
+            switch (rand() % 7) {
+            case 0:
+                new_piece = I_PIECE;
+                break;
+            case 1:
+                new_piece = O_PIECE;
+                break;
+            case 2:
+                new_piece = L_PIECE;
+                break;
+            case 3:
+                new_piece = J_PIECE;
+                break;
+            case 4:
+                new_piece = S_PIECE;
+                break;
+            case 5:
+                new_piece = T_PIECE;
+                break;
+            case 6:
+                new_piece = Z_PIECE;
+                break;
+            }
+        }
+    }
+    
+    return new_piece;
+}

@@ -13,7 +13,7 @@
 
 
 // rendering functions go here to avoid any circular dependancies
-void clear_window(Game* game);
+void clear_window(App* app);
 void draw_board(Board* board, SDL_Surface* dest, int x, int y);
 int draw_block(Block type, SDL_Surface* dest, int x, int y);
 void draw_piece(Piece* piece, SDL_Surface* dest, int x, int y);

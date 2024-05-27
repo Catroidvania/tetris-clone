@@ -45,3 +45,5 @@ int piece_collision(Piece* piece, Board* board);
 void copy_offsets(int* dest, int* source);
 void rotate_piece_right(Piece* piece, Board* board);
 void rotate_piece_left(Piece* piece, Board* board);
+void solidify_piece(Piece* piece, Board* board);
+Piece randomize_piece(Piece* piece);
