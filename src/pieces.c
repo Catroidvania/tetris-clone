@@ -5,72 +5,71 @@
 
 #include "pieces.h"
 
-    // O piece
-int O_PIECE[8] = {1, -1, 1, -2, 2, -1, 2, -2},
-    // I piece
-    I_PIECE_HORIZONTAL[8],
-    I_PIECE_VERTICAL[8],
-    // L piece
-    L_PIECE_UP[8],
-    L_PIECE_RIGHT[8],
-    L_PIECE_DOWN[8],
-    L_PIECE_LEFT[8],
-    // J piece
-    J_PIECE_UP[8],
-    J_PIECE_RIGHT[8],
-    J_PIECE_DOWN[8],
-    J_PIECE_LEFT[8],
-    // S piece
-    S_PIECE_UP[8],
-    S_PIECE_RIGHT[8],
-    S_PIECE_DOWN[8],
-    S_PIECE_LEFT[8],
-    // T piece
-    T_PIECE_UP[8]       = {0, -1, 1, -1, 1, -2, 2, -1},
-    T_PIECE_RIGHT[8]    = {0, -1, 1,  0, 1, -1, 1, -2},
-    T_PIECE_DOWN[8]     = {0, -1, 1,  0, 1, -1, 2, -1},
-    T_PIECE_LEFT[8]     = {1, -0, 1, -1, 1, -2, 2, -1},
-    // Z piece
-    Z_PIECE_UP[8],
-    Z_PIECE_RIGHT[8],
-    Z_PIECE_DOWN[8],
-    Z_PIECE_LEFT[8];
 
+const Piece I_PIECE = (Piece){
+                .type = I, .rotation = UP,
+                .x = 3, .y = 21,
+                .offsets        = {0, -2, 1, -2, 2, -2, 3, -2},
+                .up_offsets     = {0, -2, 1, -2, 2, -2, 3, -2},
+                .right_offsets  = {2,  0, 2, -1, 2, -2, 2, -3},
+                .down_offsets   = {0, -2, 1, -2, 2, -2, 3, -2},
+                .left_offsets   = {2,  0, 2, -1, 2, -2, 2, -3}
+            },
+            O_PIECE = (Piece){
+                .type = O, .rotation = UP,
+                .x = 3, .y = 20,
+                .offsets        = {1, -1, 1, -2, 2, -1, 2, -2},
+                .up_offsets     = {1, -1, 1, -2, 2, -1, 2, -2},
+                .right_offsets  = {1, -1, 1, -2, 2, -1, 2, -2},
+                .down_offsets   = {1, -1, 1, -2, 2, -1, 2, -2},
+                .left_offsets   = {1, -1, 1, -2, 2, -1, 2, -2}
+            },
+            L_PIECE = (Piece){
+                .type = L, .rotation = UP,
+                .x = 4, .y = 20,
+                .offsets        = {0, -1, 1, -1, 2, -1, 2, -2},
+                .up_offsets     = {0, -1, 1, -1, 2, -1, 2, -2},
+                .right_offsets  = {0, -2, 1,  0, 1, -1, 1, -2},
+                .down_offsets   = {0,  0, 0, -1, 1, -1, 2, -1},
+                .left_offsets   = {1,  0, 1, -1, 1, -2, 2,  0}
+            },
+            J_PIECE = (Piece){
+                .type = J, .rotation = UP,
+                .x = 4, .y = 20,
+                .offsets        = {0, -1, 0, -2, 1, -1, 2, -1},
+                .up_offsets     = {0, -1, 0, -2, 1, -1, 2, -1},
+                .right_offsets  = {0,  0, 1,  0, 1, -1, 1, -2},
+                .down_offsets   = {0, -1, 1, -1, 2, -1, 2,  0},
+                .left_offsets   = {1,  0, 1, -1, 1, -2, 2, -2}
+            },
+            S_PIECE = (Piece){
+                .type = S, .rotation = UP,
+                .x = 4, .y = 20, 
+                .offsets        = {0, -2, 1, -1, 1, -2, 2, -1},
+                .up_offsets     = {0, -2, 1, -1, 1, -2, 2, -1},
+                .right_offsets  = {1,  0, 1, -1, 2, -1, 2, -2},
+                .down_offsets   = {0, -2, 1, -1, 1, -2, 2, -1},
+                .left_offsets   = {1,  0, 1, -1, 2, -1, 2, -2},
+            },
+            T_PIECE = (Piece){
+                .type = T, .rotation = UP,
+                .x = 4, .y = 20, 
+                .offsets        = {0, -1, 1, -1, 1, -2, 2, -1},
+                .up_offsets     = {0, -1, 1, -1, 1, -2, 2, -1},
+                .right_offsets  = {0, -1, 1,  0, 1, -1, 1, -2},
+                .down_offsets   = {0, -1, 1,  0, 1, -1, 2, -1},
+                .left_offsets   = {1, -0, 1, -1, 1, -2, 2, -1}
+            },
+            Z_PIECE = (Piece){
+                .type = Z, .rotation = UP,
+                .x = 4, .y = 20, 
+                .offsets        = {0, -1, 1, -1, 1, -2, 2, -2},
+                .up_offsets     = {0, -1, 1, -1, 1, -2, 2, -2},
+                .right_offsets  = {1, -1, 1, -2, 2, -0, 2, -1},
+                .down_offsets   = {0, -1, 1, -1, 1, -2, 2, -2},
+                .left_offsets   = {1, -1, 1, -2, 2, -0, 2, -1}
+            };
 
-/*
-// get the x offset from mino 0 - 3
-inline int x_offset(int* offsets, int mino) {
-    return offsets[mino*2];
-}
-
-
-// get the y offset from mino 0 - 3
-inline int y_offset(int* offsets, int mino) {
-    return offsets[mino*2+1];
-}
-*/
-
-
-// initialises a piece of the given type
-int init_piece(Piece* piece, Block type) {
-
-    if (piece == NULL) { return -1; }
-
-    // same for every piece
-    piece->type     = type;
-    piece->rotation = UP;
-
-    switch (type) {
-    case T:
-        // pieces spawned highest piece at row 19, centered to the right
-        piece->x = 4;
-        piece->y = 20;
-        piece->offsets = T_PIECE_UP;
-        break;
-    }
-
-    return 0;
-}
 
 
 // checks if a piece intersects any non BLANK blocks
@@ -93,6 +92,16 @@ int piece_collision(Piece* piece, Board* board) {
 }
 
 
+// copy an offsets array into another array
+// both MUST be length 8
+void copy_offsets(int* dest, int* source) {
+    // this is so stupid!
+    for (int i = 0; i < 8; i++) {
+        dest[i] = source[i];
+    }
+}
+
+
 // rotates a piece clockwise if possible, no kicks or anything fancy
 void rotate_piece_right(Piece* piece, Board* board) {
     
@@ -101,29 +110,23 @@ void rotate_piece_right(Piece* piece, Board* board) {
 
     Piece test_piece = *piece;
 
-    // if i had any more forethought some kind of map wouldve been useful here
-    switch (piece->type) {
-    case T:
-        switch (piece->rotation) {
-            case UP:
-                test_piece.offsets = T_PIECE_RIGHT;
-                test_piece.rotation = RIGHT;
-                break;
-            case RIGHT:
-                test_piece.offsets = T_PIECE_DOWN;
-                test_piece.rotation = DOWN;
-                break;
-            case DOWN:
-                test_piece.offsets = T_PIECE_LEFT;
-                test_piece.rotation = LEFT;
-                break;
-            case LEFT:
-                test_piece.offsets = T_PIECE_UP;
-                test_piece.rotation = UP;
-                break;
-        }
-
-        break;
+    switch (piece->rotation) {
+        case UP:
+            copy_offsets(test_piece.offsets, piece->right_offsets);
+            test_piece.rotation = RIGHT;
+            break;
+        case RIGHT:
+            copy_offsets(test_piece.offsets, piece->down_offsets);
+            test_piece.rotation = DOWN;
+            break;
+        case DOWN:
+            copy_offsets(test_piece.offsets, piece->left_offsets);
+            test_piece.rotation = LEFT;
+            break;
+        case LEFT:
+            copy_offsets(test_piece.offsets, piece->up_offsets);
+            test_piece.rotation = UP;
+            break;
     }
 
     if (!piece_collision(&test_piece, board)) {
@@ -141,28 +144,23 @@ void rotate_piece_left(Piece* piece, Board* board) {
 
     Piece test_piece = *piece;
 
-    switch (piece->type) {
-    case T:
-        switch (piece->rotation) {
-            case UP:
-                test_piece.offsets = T_PIECE_LEFT;
-                test_piece.rotation = LEFT;
-                break;
-            case RIGHT:
-                test_piece.offsets = T_PIECE_UP;
-                test_piece.rotation = UP;
-                break;
-            case DOWN:
-                test_piece.offsets = T_PIECE_RIGHT;
-                test_piece.rotation = RIGHT;
-                break;
-            case LEFT:
-                test_piece.offsets = T_PIECE_DOWN;
-                test_piece.rotation = DOWN;
-                break;
-        }
-
-        break;
+    switch (piece->rotation) {
+        case UP:
+            copy_offsets(test_piece.offsets, piece->left_offsets);
+            test_piece.rotation = LEFT;
+            break;
+        case RIGHT:
+            copy_offsets(test_piece.offsets, piece->up_offsets);
+            test_piece.rotation = UP;
+            break;
+        case DOWN:
+            copy_offsets(test_piece.offsets, piece->right_offsets);
+            test_piece.rotation = RIGHT;
+            break;
+        case LEFT:
+            copy_offsets(test_piece.offsets, piece->down_offsets);
+            test_piece.rotation = DOWN;
+            break;
     }
 
     if (!piece_collision(&test_piece, board)) {

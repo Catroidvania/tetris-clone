@@ -23,8 +23,7 @@ int main() {
     if (init_game(&game) < 0) { return -1; }
 
     // TODO test stuff
-    init_piece(&piece, T);
-    piece.y -= 1;
+    piece = T_PIECE;
 
     game.board.blocks[0] = L;
     game.board.blocks[4] = J;
@@ -63,6 +62,27 @@ int main() {
             case SDLK_DOWN:
                 test_piece.y -= 1;
                 if (!piece_collision(&test_piece, &game.board)) { piece = test_piece; }
+                break;
+            case SDLK_1:
+                piece = I_PIECE;
+                break;
+            case SDLK_2:
+                piece = O_PIECE;
+                break;
+            case SDLK_3:
+                piece = J_PIECE;
+                break;
+            case SDLK_4:
+                piece = L_PIECE;
+                break;
+            case SDLK_5:
+                piece = S_PIECE;
+                break;
+            case SDLK_6:
+                piece = T_PIECE;
+                break;
+            case SDLK_7:
+                piece = Z_PIECE;
                 break;
 
             case SDLK_x:
