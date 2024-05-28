@@ -81,7 +81,8 @@ int piece_collision(Piece* piece, Board* board) {
 
     for (int i = 0; i < 4; i++) {
         if (piece->x + piece->offsets[i*2] > 9 || piece->x + piece->offsets[i*2] < 0 ||
-            piece->y + piece->offsets[i*2+1] > 19 || piece->y + piece->offsets[i*2+1] < 0 ||
+            piece->y + piece->offsets[i*2+1] > 23 || // you can rotate pieces into the top of the board
+            piece->y + piece->offsets[i*2+1] < 0 ||
             board->blocks[POINT(piece->x + piece->offsets[i*2], piece->y + piece->offsets[i*2+1], 10)] != BLANK) {
 
             return 1;

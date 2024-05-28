@@ -11,7 +11,7 @@
 #include "block.h"
 
 
-#define BOARDSIZE 200
+#define BOARDSIZE 220 // somwe extra room to allow piece rotation on the top ro
 #define BOARDWIDTH 10
 #define BOARDHEIGHT 20
 #define POINT(x, y, w) ((y) * (w) + (x)) // 2d coordinates to 1d array index

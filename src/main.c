@@ -14,6 +14,7 @@ int main() {
 
     int run = 1;
     int start_ms, end_ms, dt;
+    int frame = 0;
 
     // init sdl check
     if (init_sdl() < 0) { return -1; }
@@ -39,12 +40,16 @@ int main() {
         }
 
         move_current_piece(&application.game, &event);
-        lock_current_piece(&application.game);
-        clear_lines(&application.game);
+        piece_gravity(&application.game, frame);
+        update_score(&application.game, clear_lines(&application.game));
         
         // TODO wipes the board if we cannot spawn a new piece
         if (piece_collision(&application.game.next_piece, &application.game.board)) {
             clear_board(&application.game.board);
+            application.game.level = 0;
+            application.game.lines_cleared = 0;
+            application.game.score = 0;
+            application.game.last_gravity_frame = frame;
         }
 
         // clear for drawing
@@ -66,6 +71,8 @@ int main() {
         if (dt <= FRAMEDELAY) {
             SDL_Delay(FRAMEDELAY - dt);
         }
+
+        frame += 1;
     }
 
     // uninit sdl stuff

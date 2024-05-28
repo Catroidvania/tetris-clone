@@ -6,6 +6,9 @@
 #include "game.h"
 
 
+const int gravity_delay_values[10] = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6};
+
+
 // initialises a game of tetris
 int init_game(Game* game) {
     
@@ -17,9 +20,10 @@ int init_game(Game* game) {
     game->current_piece = randomize_piece(NULL);
     game->next_piece = randomize_piece(&game->current_piece);
 
+    game->level = 0;
     game->score = 0;
-    game->level = 1;
     game->lines_cleared = 0;
+    game->last_gravity_frame = 0;
 
     return 0;
 }
@@ -58,6 +62,12 @@ void move_current_piece(Game* game, SDL_Event* event) {
             test_piece.x += 1;
             if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
             break;
+        case SDLK_x:
+            rotate_piece_right(&game->current_piece, &game->board);
+            break;
+        case SDLK_z:
+            rotate_piece_left(&game->current_piece, &game->board);
+            break;
 
         // TODO for testing, change later
         case SDLK_UP:
@@ -68,12 +78,13 @@ void move_current_piece(Game* game, SDL_Event* event) {
             test_piece.y -= 1;
             if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
             break;
-
-        case SDLK_x:
-            rotate_piece_right(&game->current_piece, &game->board);
+        case SDLK_r:
+            if (game->level < 29) { game->level += 1; }
+            printf("%d\n", game->level);
             break;
-        case SDLK_z:
-            rotate_piece_left(&game->current_piece, &game->board);
+        case SDLK_f:
+            if (game->level > 0) { game->level -= 1; }
+            printf("%d\n", game->level);
             break;
         }
     }
@@ -112,12 +123,12 @@ void shift_rows_down(Game* game, int row) {
 }
 
 
-// clears and full rows and returns 1 if any lines were cleared, 0 otherwise
+// clears and full rows and returns the number of lines cleared
 int clear_lines(Game* game) {
 
     if (game == NULL) { return 0; }
 
-    int is_full,  cleared_any = 0;
+    int is_full,  cleared = 0;
 
     // row, column
     for (int r = 19; r > -1; r--) {
@@ -131,7 +142,7 @@ int clear_lines(Game* game) {
         }
 
         if (is_full) {
-            cleared_any = 1;
+            cleared += 1;
 
             for (int c = 0; c < 10; c++) {
                 game->board.blocks[POINT(c, r, BOARDWIDTH)] = BLANK;
@@ -141,5 +152,79 @@ int clear_lines(Game* game) {
         }
     }
 
-    return cleared_any;
+    return cleared ;
+}
+
+
+// returns the frames between each levels gravity
+// dont index into gravity_delay_values since it only handles levels up to 9
+int gravity_delay(int level) {
+    if (level < 0) {
+        return gravity_delay_values[0];
+    } else if (level < 10) {
+        return gravity_delay_values[level];
+    } else if (level < 13) {
+        return 5;
+    } else if (level < 16) {
+        return 4;
+    } else if (level < 19) {
+        return 3;
+    } else if (level < 29) {
+        return 2;
+    } else {
+        return 1;
+    }
+}
+
+
+// moves the piece down at level specific frame intervals
+// will lock the piece if it cannot go down any further
+void piece_gravity(Game* game, int frame) {
+
+    if (game == NULL) { return; }
+    // make sure we should actually gravity
+    if (frame - game->last_gravity_frame < gravity_delay(game->level)) { return; }
+
+    // remember this frame
+    game->last_gravity_frame = frame;
+
+    Piece test_piece = game->current_piece;
+    test_piece.y -= 1;
+
+    if (piece_collision(&test_piece, &game->board)) {
+        // duplicateish of lock_current_piece but ah well
+        solidify_piece(&game->current_piece, &game->board);
+        swap_pieces(game);
+    } else {
+        game->current_piece = test_piece;
+    }
+}
+
+
+// updates score, lines cleared, and level based on lines cleared
+void update_score(Game* game, int lines) {
+    
+    if (game == NULL) { return; }
+    if (!lines) { return; }
+
+    game->lines_cleared += lines;
+    // scoring is done using the resulting level
+    if (game->lines_cleared > game->level * 10 + 10) { game->level += 1; } // level is not capped atm
+
+    switch (lines) {
+    case 1:
+        game->score += 40 * (game->level + 1);
+        break;
+    case 2:
+        game->score += 100 * (game->level + 1);
+        break;
+    case 3:
+        game->score += 300 * (game->level + 1);
+        break;
+    default:
+        game->score += 1200 * (game->level + 1);
+        break;
+    }
+
+    printf("level: %d | lines: %d | score: %d\n", game->level, game->lines_cleared, game->score);
 }

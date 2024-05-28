@@ -19,9 +19,13 @@ typedef struct Game {
 
     Board board;    // 10x20 tetris board
     Piece current_piece, next_piece;
-    int score, level, lines_cleared;
+    int score, level, lines_cleared, last_gravity_frame;
 
 } Game;
+
+
+// frame delays for levels 0 - 9, higher levels are handed by the function gravity_delay
+extern const int gravity_delay_values[10];
 
 
 int init_game(Game* game);
@@ -30,3 +34,6 @@ void move_current_piece(Game* game, SDL_Event* event);
 void lock_current_piece(Game* game);
 void shift_rows_down(Game* game, int row);
 int clear_lines(Game* game);
+int gravity_delay(int level);
+void piece_gravity(Game* game, int frame);
+void update_score(Game* game, int lines);

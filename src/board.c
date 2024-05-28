@@ -11,7 +11,7 @@ int clear_board(Board* board) {
 
     if (board == NULL) { return -1; }
 
-    for (int i=0; i < 200; i++) {
+    for (int i = 0; i < BOARDSIZE; i++) {
         board->blocks[i] = BLANK;
     }
 
