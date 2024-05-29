@@ -13,26 +13,38 @@ void update_gamepad(SDL_Event* event, Gamepad* gp) {
     if (event == NULL) { return; }
     if (gp == NULL) { return; }
 
+    // DAS updates
     if (gp->button_left) {
-        gp->das_right_counter = 0;
         gp->das_left_counter += 1;
     }
 
     if (gp->button_right) {
-        gp->das_left_counter = 0;
         gp->das_right_counter += 1;
     }
 
+    // soft drop delay updates
     if (gp->button_down) {
         gp->soft_drop_counter += 1;
+    } else {
+        gp->soft_drop_counter = 0;
     }
 
     if (event->type == SDL_KEYDOWN && !event->key.repeat) {
         switch (event->key.keysym.sym) {
         case SDLK_LEFT:
+            // DAS reset
+            if (!gp->button_left) {
+                gp->das_left_counter = 0;
+                gp->das_right_counter = 0;
+            }
             gp->button_left = 1;
             break;
         case SDLK_RIGHT:
+            // DAS reset
+            if (!gp->button_right) {
+                gp->das_left_counter = 0;
+                gp->das_right_counter = 0;
+            }
             gp->button_right = 1;
             break;
         case SDLK_x:
