@@ -77,7 +77,8 @@ void move_current_piece(Game* game, int frame) {
     if (game->keystates.button_up) {
         test_piece.y += 1;
         if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-    } else if (game->keystates.button_down) {
+    } else if (game->keystates.button_down && game->keystates.soft_drop_counter >= (gravity_delay(game->level) / 2)) {
+        game->keystates.soft_drop_counter = 0;
         test_piece.y -= 1;
         if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
     }
