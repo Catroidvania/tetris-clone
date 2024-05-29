@@ -13,6 +13,7 @@ int init_sdl() {
         printf("no sdl?? more likely than youed think!\n%s\n", SDL_GetError());
         return -1;
     }
+
     return 0;
 }
 

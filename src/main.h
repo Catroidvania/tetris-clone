@@ -14,6 +14,7 @@
 #include "assets.h"
 #include "board.h"
 #include "game.h"
+#include "gamepad.h"
 #include "pieces.h"
 #include "rendering.h"
 

@@ -41,52 +41,37 @@ void swap_pieces(Game* game) {
 
 // moves the current piece around based on keypresses
 // TODO add DAS and stuff
-void move_current_piece(Game* game, SDL_Event* event) {
+void move_current_piece(Game* game) {
 
     if (game == NULL) { return; }
-    if (event == NULL) { return; }
 
     Piece test_piece;
+    test_piece = game->current_piece; // for checking things
 
-    // make sure a key is actually pressed
-    if (event->type == SDL_KEYDOWN) {
+    if (BUTTON_LEFT) {
+        test_piece.x -= 1;
+        if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
+    } else if (BUTTON_RIGHT) {
+        test_piece.x += 1;
+        if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
+    }
 
-        test_piece = game->current_piece; // for checking things
+    test_piece = game->current_piece;
+    if (BUTTON_UP) {
+        test_piece.y += 1;
+        if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
+    } else if (BUTTON_DOWN) {
+        test_piece.y -= 1;
+        if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
+    }
 
-        switch (event->key.keysym.sym) {
-        case SDLK_LEFT:
-            test_piece.x -= 1;
-            if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-            break;
-        case SDLK_RIGHT:
-            test_piece.x += 1;
-            if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-            break;
-        case SDLK_x:
-            rotate_piece_right(&game->current_piece, &game->board);
-            break;
-        case SDLK_z:
-            rotate_piece_left(&game->current_piece, &game->board);
-            break;
-
-        // TODO for testing, change later
-        case SDLK_UP:
-            test_piece.y += 1;
-            if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-            break;
-        case SDLK_DOWN:
-            test_piece.y -= 1;
-            if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-            break;
-        case SDLK_r:
-            if (game->level < 29) { game->level += 1; }
-            printf("%d\n", game->level);
-            break;
-        case SDLK_f:
-            if (game->level > 0) { game->level -= 1; }
-            printf("%d\n", game->level);
-            break;
-        }
+    test_piece = game->current_piece;
+    if (BUTTON_B) {
+        BUTTON_B = 0;
+        rotate_piece_right(&game->current_piece, &game->board);
+    } else if (BUTTON_A) {
+        BUTTON_A = 0;
+        rotate_piece_left(&game->current_piece, &game->board);
     }
 }
 
