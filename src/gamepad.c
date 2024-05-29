@@ -6,60 +6,67 @@
 #include "gamepad.h"
 
 
-// keyboard states
-int BUTTON_UP = 0,
-    BUTTON_DOWN = 0,
-    BUTTON_LEFT = 0,
-    BUTTON_RIGHT = 0,
-    BUTTON_A = 0,
-    BUTTON_B = 0;
-
-
 // update state of buttons so we can use our own key repeat delays
-void update_gamepad(SDL_Event* event) {
+// should only be called once per frame
+void update_gamepad(SDL_Event* event, Gamepad* gp) {
     
     if (event == NULL) { return; }
+    if (gp == NULL) { return; }
+
+    if (gp->button_left) {
+        gp->das_right_counter = 0;
+        gp->das_left_counter += 1;
+    }
+
+    if (gp->button_right) {
+        gp->das_left_counter = 0;
+        gp->das_right_counter += 1;
+    }
+
+    if (gp->button_down) {
+        gp->soft_drop_counter += 1;
+    }
 
     if (event->type == SDL_KEYDOWN && !event->key.repeat) {
         switch (event->key.keysym.sym) {
         case SDLK_LEFT:
-            BUTTON_LEFT = 1;
+            gp->button_left = 1;
             break;
         case SDLK_RIGHT:
-            BUTTON_RIGHT = 1;
+            gp->button_right = 1;
             break;
         case SDLK_x:
-            BUTTON_B = 1;
+            gp->button_b = 1;
             break;
         case SDLK_z:
-            BUTTON_A = 1;
+            gp->button_a = 1;
             break;
         case SDLK_UP:
-            BUTTON_UP = 1;
+            gp->button_up = 1;
             break;
         case SDLK_DOWN:
-            BUTTON_DOWN = 1;
+            gp->button_down = 1;
             break;
         }
     } else if (event->type == SDL_KEYUP && !event->key.repeat) {
         switch (event->key.keysym.sym) {
         case SDLK_LEFT:
-            BUTTON_LEFT = 0;
+            gp->button_left = 0;
             break;
         case SDLK_RIGHT:
-            BUTTON_RIGHT = 0;
+            gp->button_right = 0;
             break;
         case SDLK_x:
-            BUTTON_B = 0;
+            gp->button_b = 0;
             break;
         case SDLK_z:
-            BUTTON_A = 0;
+            gp->button_a = 0;
             break;
         case SDLK_UP:
-            BUTTON_UP = 0;
+            gp->button_up = 0;
             break;
         case SDLK_DOWN:
-            BUTTON_DOWN = 0;
+            gp->button_down = 0;
             break;
         }
     }

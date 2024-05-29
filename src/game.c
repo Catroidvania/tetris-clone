@@ -15,6 +15,7 @@ int init_game(Game* game) {
     if (game == NULL) { return -1; }
 
     clear_board(&game->board);
+    game->keystates = (Gamepad){0};
 
     // seed initial pieces
     game->current_piece = randomize_piece(NULL);
@@ -41,36 +42,52 @@ void swap_pieces(Game* game) {
 
 // moves the current piece around based on keypresses
 // TODO add DAS and stuff
-void move_current_piece(Game* game) {
+void move_current_piece(Game* game, int frame) {
 
     if (game == NULL) { return; }
 
     Piece test_piece;
     test_piece = game->current_piece; // for checking things
 
-    if (BUTTON_LEFT) {
-        test_piece.x -= 1;
-        if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-    } else if (BUTTON_RIGHT) {
-        test_piece.x += 1;
-        if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
+    if (game->keystates.button_left) {
+        if (!game->keystates.das_left_counter || game->keystates.das_left_counter > 15) {
+
+            test_piece.x -= 1;
+
+            if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
+
+            if (game->keystates.das_left_counter > 15) {
+                game->keystates.das_left_counter -= 6;
+            }
+        }
+    } else if (game->keystates.button_right) {
+        if (!game->keystates.das_right_counter || game->keystates.das_right_counter > 15) {
+
+            test_piece.x += 1;
+
+            if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
+
+            if (game->keystates.das_right_counter > 15) {
+                game->keystates.das_right_counter -= 6;
+            }
+        }
     }
 
     test_piece = game->current_piece;
-    if (BUTTON_UP) {
+    if (game->keystates.button_up) {
         test_piece.y += 1;
         if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-    } else if (BUTTON_DOWN) {
+    } else if (game->keystates.button_down) {
         test_piece.y -= 1;
         if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
     }
 
     test_piece = game->current_piece;
-    if (BUTTON_B) {
-        BUTTON_B = 0;
+    if (game->keystates.button_b) {
+        game->keystates.button_b = 0;
         rotate_piece_right(&game->current_piece, &game->board);
-    } else if (BUTTON_A) {
-        BUTTON_A = 0;
+    } else if (game->keystates.button_a) {
+       game->keystates.button_a = 0;
         rotate_piece_left(&game->current_piece, &game->board);
     }
 }

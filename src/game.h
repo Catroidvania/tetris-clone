@@ -19,6 +19,7 @@
 typedef struct Game {
 
     Board board;    // 10x20 tetris board
+    Gamepad keystates;
     Piece current_piece, next_piece;
     int score, level, lines_cleared, last_gravity_frame;
 
@@ -31,7 +32,7 @@ extern const int gravity_delay_values[10];
 
 int init_game(Game* game);
 void swap_pieces(Game* game);
-void move_current_piece(Game* game);
+void move_current_piece(Game* game, int frame);
 void lock_current_piece(Game* game);
 void shift_rows_down(Game* game, int row);
 int clear_lines(Game* game);

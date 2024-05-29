@@ -8,9 +8,11 @@
 #include <SDL.h>
 
 
-extern int  BUTTON_UP, BUTTON_DOWN, BUTTON_LEFT, BUTTON_RIGHT,
-            BUTTON_A, BUTTON_B;
-            // add more if needed
+typedef struct Gamepad {
+    int button_up, button_down, button_left, button_right,
+        button_a, button_b,
+        das_left_counter, das_right_counter, soft_drop_counter;
+} Gamepad;
 
 
-void update_gamepad(SDL_Event* event);
+void update_gamepad(SDL_Event* event, Gamepad* gp);

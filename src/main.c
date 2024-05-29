@@ -39,8 +39,8 @@ int main() {
             run = 0;
         }
 
-        update_gamepad(&event);
-        move_current_piece(&application.game);
+        update_gamepad(&event, &application.game.keystates);
+        move_current_piece(&application.game, frame);
         piece_gravity(&application.game, frame);
         update_score(&application.game, clear_lines(&application.game));
         
