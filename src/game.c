@@ -74,14 +74,22 @@ void move_current_piece(Game* game, int frame) {
     }
 
     test_piece = game->current_piece;
-    if (game->keystates.button_up) {
+    /*if (game->keystates.button_up) {
         test_piece.y += 1;
         if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-    } else if (game->keystates.button_down &&
+    } else */
+    if (game->keystates.button_down &&
                 // only soft drop in between gravity ticks
                 !(frame % 2) && (frame % gravity_delay(game->level))) {
         test_piece.y -= 1;
-        if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
+        if (!piece_collision(&test_piece, &game->board)) {
+            game->current_piece = test_piece;
+            game->soft_drop_bonus += 1;
+        }
+    } else if (!game->keystates.button_down && game->soft_drop_bonus) {
+        game->score += game->soft_drop_bonus;
+        game->soft_drop_bonus = 0;
+        printf("level: %d | lines: %d | score: %d\n", game->level, game->lines_cleared, game->score);
     }
     
     test_piece = game->current_piece;
