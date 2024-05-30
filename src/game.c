@@ -24,6 +24,7 @@ int init_game(Game* game) {
     game->level = 0;
     game->score = 0;
     game->lines_cleared = 0;
+    game->soft_drop_bonus = 0;
 
     return 0;
 }

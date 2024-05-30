@@ -12,6 +12,7 @@
 #include "pieces.h"
 
 #define FRAMEDELAY 16 //16.6392673398 // supposed to be 60.0988 frames per second
+                        // im not sure this is used anywhere
 
 
 // a game of tetris
@@ -21,7 +22,7 @@ typedef struct Game {
     Board board;    // 10x20 tetris board
     Gamepad keystates;
     Piece current_piece, next_piece;
-    int score, level, lines_cleared;
+    int score, level, lines_cleared, soft_drop_bonus;
 
 } Game;
 
