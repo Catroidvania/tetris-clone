@@ -50,7 +50,6 @@ int main() {
             application.game.level = 0;
             application.game.lines_cleared = 0;
             application.game.score = 0;
-            application.game.last_gravity_frame = frame;
         }
 
         // clear for drawing

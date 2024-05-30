@@ -22,12 +22,6 @@ void update_gamepad(SDL_Event* event, Gamepad* gp) {
         gp->das_right_counter += 1;
     }
 
-    // soft drop delay updates
-    if (gp->button_down) {
-        printf("%d\n", gp->soft_drop_counter);
-        gp->soft_drop_counter += 1;
-    }
-
     if (event->type == SDL_KEYDOWN && !event->key.repeat) {
         switch (event->key.keysym.sym) {
         case SDLK_LEFT:
@@ -77,7 +71,6 @@ void update_gamepad(SDL_Event* event, Gamepad* gp) {
             gp->button_up = 0;
             break;
         case SDLK_DOWN:
-            gp->soft_drop_counter = 0;
             gp->button_down = 0;
             break;
         }

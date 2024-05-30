@@ -11,7 +11,7 @@
 typedef struct Gamepad {
     int button_up, button_down, button_left, button_right,
         button_a, button_b,
-        das_left_counter, das_right_counter, soft_drop_counter;
+        das_left_counter, das_right_counter;
 } Gamepad;
 
 

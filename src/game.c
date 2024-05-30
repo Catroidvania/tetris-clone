@@ -24,7 +24,6 @@ int init_game(Game* game) {
     game->level = 0;
     game->score = 0;
     game->lines_cleared = 0;
-    game->last_gravity_frame = 0;
 
     return 0;
 }
@@ -77,12 +76,13 @@ void move_current_piece(Game* game, int frame) {
     if (game->keystates.button_up) {
         test_piece.y += 1;
         if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-    } else if (game->keystates.button_down && game->keystates.soft_drop_counter >= (gravity_delay(game->level) / 2)) {
-        game->keystates.soft_drop_counter = 0;
+    } else if (game->keystates.button_down &&
+                // only soft drop in between gravity ticks
+                !(frame % 2) && (frame % gravity_delay(game->level))) {
         test_piece.y -= 1;
         if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
     }
-
+    
     test_piece = game->current_piece;
     if (game->keystates.button_b) {
         game->keystates.button_b = 0;
@@ -90,23 +90,6 @@ void move_current_piece(Game* game, int frame) {
     } else if (game->keystates.button_a) {
        game->keystates.button_a = 0;
         rotate_piece_left(&game->current_piece, &game->board);
-    }
-}
-
-
-// locks the current piece if it cannot go any lower
-void lock_current_piece(Game* game) {
-
-    if (game == NULL) { return; }
-
-    Piece test_piece = game->current_piece;
-    test_piece.y -= 1;
-
-    // check if the piece can move down
-    if (piece_collision(&test_piece, &game->board)) {
-        // lock the piece to the board if not and move onto the next piece
-        solidify_piece(&game->current_piece, &game->board);
-        swap_pieces(game);
     }
 }
 
@@ -186,10 +169,8 @@ void piece_gravity(Game* game, int frame) {
 
     if (game == NULL) { return; }
     // make sure we should actually gravity
-    if (frame - game->last_gravity_frame < gravity_delay(game->level)) { return; }
-
-    // remember this frame
-    game->last_gravity_frame = frame;
+    // and we are not soft droppping
+    if (frame % gravity_delay(game->level)) { return; }
 
     Piece test_piece = game->current_piece;
     test_piece.y -= 1;
@@ -198,6 +179,8 @@ void piece_gravity(Game* game, int frame) {
         // duplicateish of lock_current_piece but ah well
         solidify_piece(&game->current_piece, &game->board);
         swap_pieces(game);
+        // stop soft dropping when next piece spawns
+        game->keystates.button_down = 0;
     } else {
         game->current_piece = test_piece;
     }
