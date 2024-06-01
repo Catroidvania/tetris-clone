@@ -8,9 +8,11 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
+
 #include "assets.h"
 #include "block.h"
 #include "board.h"
+#include "random.h"
 
 
 // tracks piece rotations
@@ -46,4 +48,3 @@ void copy_offsets(int* dest, int* source);
 void rotate_piece_right(Piece* piece, Board* board);
 void rotate_piece_left(Piece* piece, Board* board);
 void solidify_piece(Piece* piece, Board* board);
-Piece randomize_piece(Piece* piece);

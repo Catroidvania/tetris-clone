@@ -8,6 +8,7 @@
 #include <SDL.h>
 #include <SDL_timer.h>
 #include <stdio.h>
+#include <time.h>
 #include <math.h>
 
 #include "app.h"

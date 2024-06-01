@@ -10,14 +10,17 @@ const int gravity_delay_values[10] = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6};
 
 
 // initialises a game of tetris
-int init_game(Game* game) {
+int init_game(Game* game, int rng_seed) {
     
     if (game == NULL) { return -1; }
 
     clear_board(&game->board);
     game->keystates = (Gamepad){0};
 
-    // seed initial pieces
+    // seed rng state
+    game->rng_state.states = {rng_seed, rng_seed};
+
+    // initialise starting pieces
     game->current_piece = randomize_piece(NULL);
     game->next_piece = randomize_piece(&game->current_piece);
 
@@ -222,4 +225,96 @@ void update_score(Game* game, int lines) {
     }
 
     printf("level: %d | lines: %d | score: %d\n", game->level, game->lines_cleared, game->score);
+}
+
+
+// randomises the provided piece
+// if piece is not NULL, will try and avoid generating the same piece as the current one
+Piece randomize_piece(Game* game, Piece* piece) {
+
+    Piece new_piece;
+    
+    if (piece == NULL) {
+        switch (rng_next(&game->rng_state) % 7) {
+        case 0:
+            new_piece = I_PIECE;
+            break;
+        case 1:
+            new_piece = O_PIECE;
+            break;
+        case 2:
+            new_piece = L_PIECE;
+            break;
+        case 3:
+            new_piece = J_PIECE;
+            break;
+        case 4:
+            new_piece = S_PIECE;
+            break;
+        case 5:
+            new_piece = T_PIECE;
+            break;
+        case 6:
+            new_piece = Z_PIECE;
+            break;
+        }
+    } else {
+ 
+        // one higher to emulate the NES tetris randomiser
+        switch (rng_next(&game->rng_state) % 8) {
+        case 0:
+            new_piece = I_PIECE;
+            break;
+        case 1:
+            new_piece = O_PIECE;
+            break;
+        case 2:
+            new_piece = L_PIECE;
+            break;
+        case 3:
+            new_piece = J_PIECE;
+            break;
+        case 4:
+            new_piece = S_PIECE;
+            break;
+        case 5:
+            new_piece = T_PIECE;
+            break;
+        case 6:
+            new_piece = Z_PIECE;
+            break;
+        case 7:
+            new_piece = *piece;
+            break;
+        }
+
+        if (new_piece.type == piece->type) {
+            // the compiler can figure this crap out lmao
+            switch (rng_state(&game->rng_state) % 7) {
+            case 0:
+                new_piece = I_PIECE;
+                break;
+            case 1:
+                new_piece = O_PIECE;
+                break;
+            case 2:
+                new_piece = L_PIECE;
+                break;
+            case 3:
+                new_piece = J_PIECE;
+                break;
+            case 4:
+                new_piece = S_PIECE;
+                break;
+            case 5:
+                new_piece = T_PIECE;
+                break;
+            case 6:
+                new_piece = Z_PIECE;
+                break;
+            }
+        }
+    }
+    
+    return new_piece;
 }

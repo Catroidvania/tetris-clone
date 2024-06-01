@@ -15,6 +15,7 @@ int main() {
     int run = 1;
     int start_ms, end_ms, dt;
     int frame = 0;
+    int rng_seed = time(NULL);
 
     // init sdl check
     if (init_sdl() < 0) { return -1; }
