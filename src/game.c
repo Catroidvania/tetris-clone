@@ -10,7 +10,7 @@ const int gravity_delay_values[10] = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6};
 
 
 // initialises a game of tetris
-int init_game(Game* game) {
+int init_game(Game* game, int seed) {
     
     if (game == NULL) { return -1; }
 
@@ -18,12 +18,11 @@ int init_game(Game* game) {
     game->keystates = (Gamepad){0};
 
     // unseeded rng, call seed_rng later
-    game->rng_state = (RNGState){0};
+    game->rng_state = (RNGState){seed};
 
     // initialise starting pieces
-    // moved piece generation into seed_rng() so the first 2 pieces can be randomised
-    /*game->current_piece = randomize_piece(game, NULL); 
-    game->next_piece = randomize_piece(game, &game->current_piece);*/
+    game->current_piece = randomize_piece(game, NULL); 
+    game->next_piece = randomize_piece(game, &game->current_piece);
 
     game->level = 0;
     game->score = 0;
@@ -238,22 +237,22 @@ Piece randomize_piece(Game* game, Piece* piece) {
     if (piece == NULL) {
         switch (rng_next(&game->rng_state) % 7) {
         case 0:
-            new_piece = I_PIECE;
-            break;
-        case 1:
             new_piece = O_PIECE;
             break;
-        case 2:
+        case 1:
             new_piece = L_PIECE;
             break;
+        case 2:
+            new_piece = I_PIECE;
+            break;
         case 3:
-            new_piece = J_PIECE;
+            new_piece = T_PIECE;
             break;
         case 4:
             new_piece = S_PIECE;
             break;
         case 5:
-            new_piece = T_PIECE;
+            new_piece = J_PIECE;
             break;
         case 6:
             new_piece = Z_PIECE;
@@ -264,22 +263,22 @@ Piece randomize_piece(Game* game, Piece* piece) {
         // one higher to emulate the NES tetris randomiser
         switch (rng_next(&game->rng_state) % 8) {
         case 0:
-            new_piece = I_PIECE;
-            break;
-        case 1:
             new_piece = O_PIECE;
             break;
-        case 2:
+        case 1:
             new_piece = L_PIECE;
             break;
+        case 2:
+            new_piece = I_PIECE;
+            break;
         case 3:
-            new_piece = J_PIECE;
+            new_piece = T_PIECE;
             break;
         case 4:
             new_piece = S_PIECE;
             break;
         case 5:
-            new_piece = T_PIECE;
+            new_piece = J_PIECE;
             break;
         case 6:
             new_piece = Z_PIECE;
@@ -293,22 +292,22 @@ Piece randomize_piece(Game* game, Piece* piece) {
             // the compiler can figure this crap out lmao
             switch (rng_next(&game->rng_state) % 7) {
             case 0:
-                new_piece = I_PIECE;
-                break;
-            case 1:
                 new_piece = O_PIECE;
                 break;
-            case 2:
+            case 1:
                 new_piece = L_PIECE;
                 break;
+            case 2:
+                new_piece = I_PIECE;
+                break;
             case 3:
-                new_piece = J_PIECE;
+                new_piece = T_PIECE;
                 break;
             case 4:
                 new_piece = S_PIECE;
                 break;
             case 5:
-                new_piece = T_PIECE;
+                new_piece = J_PIECE;
                 break;
             case 6:
                 new_piece = Z_PIECE;
@@ -318,18 +317,4 @@ Piece randomize_piece(Game* game, Piece* piece) {
     }
 
     return new_piece;
-}
-
-
-// seeds the game rng
-// called seperately since init_app calls init_game atm lmao
-void seed_rng(Game* game, int seed) {
-    
-    if (game == NULL) { return; };
-    game->rng_state = (RNGState){seed};
-    rng_next(&game->rng_state);
-
-    // this is really terrible organisation!
-    game->current_piece = randomize_piece(game, NULL); 
-    game->next_piece = randomize_piece(game, &game->current_piece);
 }

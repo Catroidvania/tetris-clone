@@ -23,8 +23,8 @@ void quit_sdl() {
 }
 
 
-// create a window and stuff
-int init_app(App* app) {
+// create a window and inits a game
+int init_app(App* app, int rng_seed) {
 
     // null pointer check
     if (app == NULL) { return -1; }
@@ -48,8 +48,10 @@ int init_app(App* app) {
 
     // decorate window
     app->window_surface = SDL_GetWindowSurface(app->window);
-    //clear_window(game); // call this in the draw loop
-    init_game(&app->game);
+
+    // for starting future games that need the same rng
+    app->rng_seed = rng_seed;
+    init_game(&app->game, rng_seed);
 
     return 0;
 }

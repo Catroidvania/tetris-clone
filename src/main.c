@@ -15,7 +15,8 @@ int main() {
     int run = 1;
     int start_ms, end_ms, dt;
     int frame = 0;
-    int rng_seed = time(NULL);
+
+    srand(time(NULL));
 
     // init sdl check
     if (init_sdl() < 0) { return -1; }
@@ -24,8 +25,7 @@ int main() {
     if (load_assets() < 0) { return -1; }
 
     // create window
-    if (init_app(&application) < 0) { return -1; }
-    seed_rng(&application.game, rng_seed);
+    if (init_app(&application, rand()) < 0) { return -1; }
 
     // game loop
     while (run) {

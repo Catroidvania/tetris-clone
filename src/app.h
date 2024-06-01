@@ -24,12 +24,13 @@ typedef struct Application {
     SDL_Surface* window_surface;
 
     Game game;
+    int rng_seed;
 
 } App;
 
 
 int init_sdl();
 void quit_sdl();
-int init_app(App* app);
+int init_app(App* app, int rng_seed);
 void end_app(App* app);
 
