@@ -10,7 +10,7 @@
 #include "board.h"
 #include "gamepad.h"
 #include "pieces.h"
-#include "random.h"
+#include "rng.h"
 
 #define FRAMEDELAY 16 //16.6392673398 // supposed to be 60.0988 frames per second
                         // im not sure this is used anywhere
@@ -33,7 +33,7 @@ typedef struct Game {
 extern const int gravity_delay_values[10];
 
 
-int init_game(Game* game, int rng_seed);
+int init_game(Game* game);
 void swap_pieces(Game* game);
 void move_current_piece(Game* game, int frame);
 void shift_rows_down(Game* game, int row);
@@ -42,3 +42,4 @@ int gravity_delay(int level);
 void piece_gravity(Game* game, int frame);
 void update_score(Game* game, int lines);
 Piece randomize_piece(Game* game, Piece* piece);
+void seed_rng(Game* game, int seed);

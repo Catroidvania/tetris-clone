@@ -10,19 +10,20 @@ const int gravity_delay_values[10] = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6};
 
 
 // initialises a game of tetris
-int init_game(Game* game, int rng_seed) {
+int init_game(Game* game) {
     
     if (game == NULL) { return -1; }
 
     clear_board(&game->board);
     game->keystates = (Gamepad){0};
 
-    // seed rng state
-    game->rng_state.states = {rng_seed, rng_seed};
+    // unseeded rng, call seed_rng later
+    game->rng_state = (RNGState){0};
 
     // initialise starting pieces
-    game->current_piece = randomize_piece(NULL);
-    game->next_piece = randomize_piece(&game->current_piece);
+    // moved piece generation into seed_rng() so the first 2 pieces can be randomised
+    /*game->current_piece = randomize_piece(game, NULL); 
+    game->next_piece = randomize_piece(game, &game->current_piece);*/
 
     game->level = 0;
     game->score = 0;
@@ -39,7 +40,7 @@ void swap_pieces(Game* game) {
     if (game == NULL) { return; }
 
     game->current_piece = game->next_piece;
-    game->next_piece = randomize_piece(&game->current_piece);
+    game->next_piece = randomize_piece(game, &game->current_piece);
 }
 
 
@@ -290,7 +291,7 @@ Piece randomize_piece(Game* game, Piece* piece) {
 
         if (new_piece.type == piece->type) {
             // the compiler can figure this crap out lmao
-            switch (rng_state(&game->rng_state) % 7) {
+            switch (rng_next(&game->rng_state) % 7) {
             case 0:
                 new_piece = I_PIECE;
                 break;
@@ -315,6 +316,20 @@ Piece randomize_piece(Game* game, Piece* piece) {
             }
         }
     }
-    
+
     return new_piece;
+}
+
+
+// seeds the game rng
+// called seperately since init_app calls init_game atm lmao
+void seed_rng(Game* game, int seed) {
+    
+    if (game == NULL) { return; };
+    game->rng_state = (RNGState){seed};
+    rng_next(&game->rng_state);
+
+    // this is really terrible organisation!
+    game->current_piece = randomize_piece(game, NULL); 
+    game->next_piece = randomize_piece(game, &game->current_piece);
 }

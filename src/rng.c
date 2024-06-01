@@ -1,9 +1,9 @@
-/* src/random.c
+/* src/rng.c
  * created fri may 31 2024
  * by catroidvania
  */
 
-#include "random.h"
+#include "rng.h"
 
 
 // rotate the bits of x k places to the left
@@ -26,5 +26,5 @@ uint32_t rng_next(RNGState* state) {
 	state->states[0] = bit_rotate_left(state1, 26) ^ state2 ^ (state2 << 9);
 	state->states[1] = bit_rotate_left(state2, 13);
 
-	return result;
+	return state->value;
 }

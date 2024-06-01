@@ -12,7 +12,6 @@
 #include "assets.h"
 #include "block.h"
 #include "board.h"
-#include "random.h"
 
 
 // tracks piece rotations

@@ -1,4 +1,4 @@
-/* src/random.h
+/* src/rng.h
  * created fri may 31 2024
  * by catroidvania
  */
@@ -14,10 +14,12 @@
 
 
 // remember to seed the state otherwise it will generate only 0s!
-typedef struct RandomNumber {
+typedef union RandomNumber {
+    uint64_t value;
     uint32_t states[2];
 } RNGState;
 
 
-inline uint32_t bit_rotate_left(uint32_t x, int k);
+// for some reason making this inline makes it fail to link
+//uint32_t bit_rotate_left(uint32_t x, int k);
 uint32_t rng_next(RNGState* state);

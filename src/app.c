@@ -29,9 +29,7 @@ int init_app(App* app) {
     // null pointer check
     if (app == NULL) { return -1; }
 
-    // seed randomness
-    srand(time(NULL));
-
+    // sdl window stuff
     app->window = NULL;
     app->window_surface = NULL;
 

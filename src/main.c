@@ -25,6 +25,7 @@ int main() {
 
     // create window
     if (init_app(&application) < 0) { return -1; }
+    seed_rng(&application.game, rng_seed);
 
     // game loop
     while (run) {
