@@ -12,8 +12,8 @@
 #include "game.h"
 
 
-#define WINDOWWIDTH 320
-#define WINDOWHEIGHT 640
+#define WINDOWWIDTH 960
+#define WINDOWHEIGHT 720
 
 
 // contains app stuff

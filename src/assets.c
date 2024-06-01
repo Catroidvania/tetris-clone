@@ -13,7 +13,17 @@ SDL_Surface *T_TEXTURE = NULL,
             *J_TEXTURE = NULL,
             *S_TEXTURE = NULL,
             *Z_TEXTURE = NULL,
-            *BLANK_TEXTURE = NULL;
+            *BLANK_TEXTURE = NULL,
+            *GHOST_TEXTURE = NULL,
+            *WINDOW_BG_TEXTURE = NULL,
+            *BOARD_BG_TEXTURE = NULL, 
+            *PREVIEW_FRAME_TEXTURE = NULL,
+            *SCORE_TEXTURE = NULL, 
+            *LEVEL_TEXTURE = NULL,
+            *LINES_TEXTURE = NULL;
+
+SDL_Surface* NUMBER_TEXTURE[10] = {NULL};
+
 
 
 // load png function with error checking
@@ -65,6 +75,35 @@ int load_assets() {
     load_png(&BLANK_TEXTURE, "assets/empty.png");
     if (BLANK_TEXTURE == NULL) { all_success = -1; }
 
+    load_png(&GHOST_TEXTURE, "assets/ghost.png");
+    if (GHOST_TEXTURE == NULL) { all_success = -1; }
+
+    load_png(&WINDOW_BG_TEXTURE, "assets/bg.png");
+    if (WINDOW_BG_TEXTURE == NULL) { all_success = -1; }
+
+    load_png(&BOARD_BG_TEXTURE, "assets/board_bg.png");
+    if (BOARD_BG_TEXTURE == NULL) { all_success = -1; }
+
+    load_png(&PREVIEW_FRAME_TEXTURE, "assets/preview.png");
+    if (PREVIEW_FRAME_TEXTURE == NULL) { all_success = -1; }
+
+    load_png(&SCORE_TEXTURE, "assets/score.png");
+    if (SCORE_TEXTURE == NULL) { all_success = -1; }
+
+    load_png(&LEVEL_TEXTURE, "assets/level.png");
+    if (LEVEL_TEXTURE == NULL) { all_success = -1; }
+
+    load_png(&LINES_TEXTURE, "assets/lines.png");
+    if (LINES_TEXTURE == NULL) { all_success = -1; }
+
+    // load number textures
+    char fp[13] = {'a', 's', 's', 'e', 't', 's', '/', '0', '.', 'p', 'n', 'g', '\0'}; // 7, 48
+    for (int i = 0; i < 10; i++) {
+        fp[7] = i+48;
+        load_png(&NUMBER_TEXTURE[i], fp);
+        if (NUMBER_TEXTURE[i] == NULL) { all_success = -1; }
+    }
+
     return all_success;
 }
 
@@ -79,4 +118,15 @@ void unload_assets() {
     SDL_FreeSurface(T_TEXTURE);
     SDL_FreeSurface(I_TEXTURE);
     SDL_FreeSurface(BLANK_TEXTURE);
+    SDL_FreeSurface(GHOST_TEXTURE);
+    SDL_FreeSurface(WINDOW_BG_TEXTURE);
+    SDL_FreeSurface(BOARD_BG_TEXTURE);
+    SDL_FreeSurface(PREVIEW_FRAME_TEXTURE);
+    SDL_FreeSurface(SCORE_TEXTURE);
+    SDL_FreeSurface(LEVEL_TEXTURE);
+    SDL_FreeSurface(LINES_TEXTURE);
+
+    for (int i = 0; i < 10; i++) {
+        SDL_FreeSurface(NUMBER_TEXTURE[i]);
+    }
 }

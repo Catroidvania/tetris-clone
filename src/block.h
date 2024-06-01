@@ -15,7 +15,8 @@ typedef enum BlockType {
     J = 'J',
     S = 'S',
     Z = 'Z',
-    BLANK = ' '
+    BLANK = ' ',
+    GHOST = '.'
 } Block;
 
 

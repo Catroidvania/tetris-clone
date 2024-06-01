@@ -58,8 +58,11 @@ int main() {
         clear_window(&application);
         
         // draw stuff
-        draw_board(&application.game.board, application.window_surface, 0, 0);
-        draw_piece(&application.game.current_piece, application.window_surface, 0, 0);
+        draw_board(&application.game.board, application.window_surface, SPBOARDX, SPBOARDY);
+        draw_stats(&application.game, application.window_surface, SPSTATSX, SPSTATSY);
+        draw_preview(&application.game, application.window_surface, SPPREVIEWX, SPPREVIEWY);
+        draw_ghost(&application.game, application.window_surface, SPBOARDX, SPBOARDY);
+        draw_piece(&application.game.current_piece, application.window_surface, SPBOARDX, SPBOARDY);
 
         // refresh window
         SDL_UpdateWindowSurface(application.window);

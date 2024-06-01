@@ -92,7 +92,7 @@ void move_current_piece(Game* game, int frame) {
     } else if (!game->keystates.button_down && game->soft_drop_bonus) {
         game->score += game->soft_drop_bonus;
         game->soft_drop_bonus = 0;
-        printf("level: %d | lines: %d | score: %d\n", game->level, game->lines_cleared, game->score);
+        //printf("level: %d | lines: %d | score: %d\n", game->level, game->lines_cleared, game->score);
     }
     
     test_piece = game->current_piece;
@@ -224,7 +224,7 @@ void update_score(Game* game, int lines) {
         break;
     }
 
-    printf("level: %d | lines: %d | score: %d\n", game->level, game->lines_cleared, game->score);
+   // printf("level: %d | lines: %d | score: %d\n", game->level, game->lines_cleared, game->score);
 }
 
 
