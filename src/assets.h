@@ -29,9 +29,15 @@ extern SDL_Surface  *T_TEXTURE,
                     *PREVIEW_FRAME_TEXTURE,
                     *SCORE_TEXTURE,
                     *LEVEL_TEXTURE,
-                    *LINES_TEXTURE;
+                    *LINES_TEXTURE,
+                    *GAME_OVER_TEXTURE,
+                    *SPLASH_TEXTURE;
 
 extern SDL_Surface* NUMBER_TEXTURE[10];
+extern SDL_Surface* BIG_NUMBER_TEXTURE[3];
+extern SDL_Surface* SOLO_BTN_TEXTURE[2];
+extern SDL_Surface* VS_CPU_BTN_TEXTURE[2];
+extern SDL_Surface* QUIT_BTN_TEXTURE[2];
 
 
 int load_png(SDL_Surface** surface, char* filepath);

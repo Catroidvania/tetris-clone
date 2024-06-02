@@ -30,3 +30,4 @@ void draw_ghost(Game* game, SDL_Surface* dest, int x, int y);
 void draw_preview(Game* game, SDL_Surface* dest, int x, int y);
 void draw_stats(Game* game, SDL_Surface* dest, int x, int y);
 void draw_number(int number, int places, SDL_Surface* dest, int x, int y);
+int draw_image(SDL_Surface* src, SDL_Surface* dest, int x, int y);

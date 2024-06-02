@@ -14,7 +14,7 @@ int main() {
 
     int run = 1;
     int start_ms, end_ms, dt;
-    int frame = 0;
+    int frame = 0, countdown_frame = 0, countdown_counter = 2;
 
     srand(time(NULL));
 
@@ -41,19 +41,25 @@ int main() {
             run = 0;
         }
 
+        // handle keypresses
         update_gamepad(&event, &application.game.keystates);
+
+    // update game stuff
+    if (application.screen == GAMEPLAYING) {
+        
+        // gameover check
+        if (piece_collision(&application.game.current_piece, &application.game.board)) {
+            application.screen = GAMEOVER;
+            application.game.keystates = (Gamepad){0};
+        }
+
         move_current_piece(&application.game, frame);
         piece_gravity(&application.game, frame);
         update_score(&application.game, clear_lines(&application.game));
-        
-        // TODO wipes the board if we cannot spawn a new piece
-        if (piece_collision(&application.game.next_piece, &application.game.board)) {
-            clear_board(&application.game.board);
-            application.game.level = 0;
-            application.game.lines_cleared = 0;
-            application.game.score = 0;
-        }
+    }
 
+    // draw game stuff
+    if (application.screen == GAMEPLAYING || application.screen == GAMECOUNTDOWN || application.screen == GAMEOVER) {
         // clear for drawing
         clear_window(&application);
         
@@ -63,6 +69,35 @@ int main() {
         draw_preview(&application.game, application.window_surface, SPPREVIEWX, SPPREVIEWY);
         draw_ghost(&application.game, application.window_surface, SPBOARDX, SPBOARDY);
         draw_piece(&application.game.current_piece, application.window_surface, SPBOARDX, SPBOARDY);
+    }
+
+
+    // if doing the little countdown we need to draw these on top of everything else 
+    if (application.screen == GAMECOUNTDOWN) {
+        if (!countdown_frame) {
+            countdown_frame = frame;
+        } else if (frame >= countdown_frame + 60) {
+            countdown_counter--;
+            countdown_frame = frame;
+        }
+
+        if (countdown_counter < 0) {
+            application.screen = GAMEPLAYING;
+            countdown_frame = 0;
+            countdown_counter = 2;
+            application.game.keystates = (Gamepad){0};
+        } else {
+            draw_image(BIG_NUMBER_TEXTURE[countdown_counter], application.window_surface, SPBOARDX, SPBOARDY);
+        }
+    // game over graphic
+    } else if (application.screen == GAMEOVER) {
+        draw_image(GAME_OVER_TEXTURE, application.window_surface, SPBOARDX, SPBOARDY);
+
+        if (application.game.keystates.button_a || application.game.keystates.button_b) {
+            reset_game(&application.game);
+            application.screen = GAMECOUNTDOWN;
+        }
+    }
 
         // refresh window
         SDL_UpdateWindowSurface(application.window);

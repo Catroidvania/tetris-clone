@@ -16,6 +16,16 @@
 #define WINDOWHEIGHT 720
 
 
+// what screen were on
+typedef enum MenuState {
+    MAINMENU,
+    GAMESETTINGS,
+    GAMECOUNTDOWN,
+    GAMEPLAYING,
+    GAMEOVER
+} Screen;
+
+
 // contains app stuff
 typedef struct Application {
     
@@ -23,6 +33,7 @@ typedef struct Application {
     SDL_Window* window;
     SDL_Surface* window_surface;
 
+    Screen screen;
     Game game;
     int rng_seed;
 

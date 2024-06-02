@@ -179,3 +179,14 @@ void draw_number(int number, int places, SDL_Surface* dest, int x, int y) {
         SDL_BlitSurface(NUMBER_TEXTURE[digit], NULL, dest, &coords);
     }
 }
+
+
+// wrapper over SDL_BlitSurface so i dont need to screw with rects
+int draw_image(SDL_Surface* src, SDL_Surface* dest, int x, int y) {
+
+    if (src == NULL) { return -1; }
+    if (dest == NULL)  { return -1; }
+
+    SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
+    return SDL_BlitSurface(src, NULL, dest, &coords);
+}

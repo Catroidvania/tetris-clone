@@ -318,3 +318,15 @@ Piece randomize_piece(Game* game, Piece* piece) {
 
     return new_piece;
 }
+
+void reset_game(Game* game) {
+
+    if (game == NULL) { return; }
+
+    clear_board(&game->board);
+    game->level = 0;
+    game->lines_cleared = 0;
+    game->score = 0;
+    game->soft_drop_bonus = 0;
+    game->keystates = (Gamepad){0};
+}

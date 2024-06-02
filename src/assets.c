@@ -6,6 +6,7 @@
 #include "assets.h"
 
 
+// im starting to think i shouldve used some kind of map or texture atlas for this lmao
 SDL_Surface *T_TEXTURE = NULL,
             *I_TEXTURE = NULL,
             *O_TEXTURE = NULL,
@@ -20,9 +21,15 @@ SDL_Surface *T_TEXTURE = NULL,
             *PREVIEW_FRAME_TEXTURE = NULL,
             *SCORE_TEXTURE = NULL, 
             *LEVEL_TEXTURE = NULL,
-            *LINES_TEXTURE = NULL;
+            *LINES_TEXTURE = NULL,
+            *GAME_OVER_TEXTURE = NULL,
+            *SPLASH_TEXTURE = NULL;
 
 SDL_Surface* NUMBER_TEXTURE[10] = {NULL};
+SDL_Surface* BIG_NUMBER_TEXTURE[3] = {NULL};
+SDL_Surface* SOLO_BTN_TEXTURE[2] = {NULL};
+SDL_Surface* VS_CPU_BTN_TEXTURE[2] = {NULL};
+SDL_Surface* QUIT_BTN_TEXTURE[2] = {NULL};
 
 
 
@@ -46,6 +53,8 @@ int load_png(SDL_Surface** surface, char* filepath) {
 
 // init function for loading all textures
 // TODO remember to add the corrosponding free to unload_assets() when u add a new texture
+// there is mort certainly a better way to do this lmao
+// in hindsight i shouldve just compared the output pf load_png but i did not think i was gonna be loading so many textures
 int load_assets() {
 
     //SDL_RWops* file = NULL;
@@ -96,6 +105,39 @@ int load_assets() {
     load_png(&LINES_TEXTURE, "assets/lines.png");
     if (LINES_TEXTURE == NULL) { all_success = -1; }
 
+    load_png(&GAME_OVER_TEXTURE, "assets/game_over.png");
+    if (GAME_OVER_TEXTURE == NULL) { all_success = -1; }
+
+    load_png(&BIG_NUMBER_TEXTURE[0], "assets/big_1.png");
+    if (BIG_NUMBER_TEXTURE[0] == NULL) { all_success = -1; }
+
+    load_png(&BIG_NUMBER_TEXTURE[1], "assets/big_2.png");
+    if (BIG_NUMBER_TEXTURE[1] == NULL) { all_success = -1; }
+
+    load_png(&BIG_NUMBER_TEXTURE[2], "assets/big_3.png");
+    if (BIG_NUMBER_TEXTURE[2] == NULL) { all_success = -1; }
+
+    load_png(&SPLASH_TEXTURE, "assets/splash.png");
+    if (SPLASH_TEXTURE == NULL) { all_success = -1; }
+
+    load_png(&SOLO_BTN_TEXTURE[0], "assets/solo_off.png");
+    if (SOLO_BTN_TEXTURE[0] == NULL) { all_success = -1; }
+
+    load_png(&SOLO_BTN_TEXTURE[1], "assets/solo_on.png");
+    if (SOLO_BTN_TEXTURE[1] == NULL) { all_success = -1; }
+
+    load_png(&VS_CPU_BTN_TEXTURE[0], "assets/vs_cpu_off.png");
+    if (VS_CPU_BTN_TEXTURE[0] == NULL) { all_success = -1; }
+
+    load_png(&VS_CPU_BTN_TEXTURE[1], "assets/vs_cpu_on.png");
+    if (VS_CPU_BTN_TEXTURE[1] == NULL) { all_success = -1; }
+
+    load_png(&QUIT_BTN_TEXTURE[0], "assets/quit_off.png");
+    if (QUIT_BTN_TEXTURE[0] == NULL) { all_success = -1; }
+
+    load_png(&QUIT_BTN_TEXTURE[1], "assets/quit_on.png");
+    if (QUIT_BTN_TEXTURE[1] == NULL) { all_success = -1; }
+
     // load number textures
     char fp[13] = {'a', 's', 's', 'e', 't', 's', '/', '0', '.', 'p', 'n', 'g', '\0'}; // 7, 48
     for (int i = 0; i < 10; i++) {
@@ -125,8 +167,21 @@ void unload_assets() {
     SDL_FreeSurface(SCORE_TEXTURE);
     SDL_FreeSurface(LEVEL_TEXTURE);
     SDL_FreeSurface(LINES_TEXTURE);
+    SDL_FreeSurface(GAME_OVER_TEXTURE);
+    SDL_FreeSurface(SPLASH_TEXTURE);
 
     for (int i = 0; i < 10; i++) {
         SDL_FreeSurface(NUMBER_TEXTURE[i]);
     }
+
+    for (int i = 0; i < 3; i++) {
+        SDL_FreeSurface(BIG_NUMBER_TEXTURE[i]);
+    }
+
+    for (int i = 0; i < 2; i++) {
+        SDL_FreeSurface(SOLO_BTN_TEXTURE[i]);
+        SDL_FreeSurface(VS_CPU_BTN_TEXTURE[i]);
+        SDL_FreeSurface(QUIT_BTN_TEXTURE[i]);
+    }
+
 }
