@@ -105,9 +105,9 @@ void draw_ghost(Game* game, SDL_Surface* dest, int x, int y) {
     test_piece.type = GHOST;
 
     while (!piece_collision(&test_piece, &game->board)) {
-        test_piece.y -= 1;
+        test_piece.y--;
     }
-    test_piece.y += 1;
+    test_piece.y++;
 
     if (test_piece.y < game->current_piece.y) { draw_piece(&test_piece, dest, x, y); }
 }

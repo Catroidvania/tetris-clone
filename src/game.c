@@ -77,12 +77,9 @@ void move_current_piece(Game* game, int frame) {
     }
 
     test_piece = game->current_piece;
-    /*if (game->keystates.button_up) {
-        test_piece.y += 1;
-        if (!piece_collision(&test_piece, &game->board)) { game->current_piece = test_piece; }
-    } else */
-    if (game->keystates.button_down &&
-                // only soft drop in between gravity ticks
+    if (game->keystates.button_up) {
+        hard_drop(game);
+    } else if (game->keystates.button_down &&
                 !(frame % 2) && (frame % gravity_delay(game->level))) {
         test_piece.y -= 1;
         if (!piece_collision(&test_piece, &game->board)) {
@@ -332,4 +329,24 @@ void reset_game(Game* game) {
     game->score = 0;
     game->soft_drop_bonus = 0;
     game->keystates = RESET_GAMEPAD;
+}
+
+
+// hard drop
+void hard_drop(Game* game) {
+
+    if (game == NULL) { return; }
+
+    Piece test_piece = game->current_piece;
+
+    while (!piece_collision(&test_piece, &game->board)) {
+        test_piece.y--;
+        game->score += 2;
+    }
+    test_piece.y++;
+    game->current_piece = test_piece;
+
+    solidify_piece(&game->current_piece, &game->board);
+    swap_pieces(game);
+    game->keystates.button_up = 0;
 }

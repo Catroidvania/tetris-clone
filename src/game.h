@@ -43,3 +43,4 @@ void piece_gravity(Game* game, int frame);
 void update_score(Game* game, int lines);
 Piece randomize_piece(Game* game, Piece* piece);
 void reset_game(Game* game);
+void hard_drop(Game*);
