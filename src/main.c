@@ -50,7 +50,8 @@ int main() {
         // gameover check
         if (piece_collision(&application.game.current_piece, &application.game.board)) {
             application.screen = GAMEOVER;
-            application.game.keystates = (Gamepad){0};
+            // i should not that this does not set all elements to 0, it just does that 
+            application.game.keystates = RESET_GAMEPAD;
         }
 
         move_current_piece(&application.game, frame);
@@ -85,9 +86,9 @@ int main() {
             application.screen = GAMEPLAYING;
             countdown_frame = 0;
             countdown_counter = 2;
-            application.game.keystates = (Gamepad){0};
+            application.game.keystates = RESET_GAMEPAD;
         } else {
-            draw_image(BIG_NUMBER_TEXTURE[countdown_counter], application.window_surface, SPBOARDX, SPBOARDY);
+            draw_image(BIG_1_TEXTURE +countdown_counter, application.window_surface, SPBOARDX, SPBOARDY);
         }
     // game over graphic
     } else if (application.screen == GAMEOVER) {

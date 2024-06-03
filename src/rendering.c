@@ -14,7 +14,7 @@ void clear_window(App* app) {
 
     SDL_Rect coords = {0};
 
-    SDL_BlitSurface(WINDOW_BG_TEXTURE, NULL, app->window_surface, &coords);
+    SDL_BlitSurface(TEXTURES[WINDOW_BG_TEXTURE], NULL, app->window_surface, &coords);
 }
 
 
@@ -25,7 +25,7 @@ void draw_board(Board* board, SDL_Surface* dest, int x, int y) {
     if (dest == NULL)  { return; }
 
     SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
-    SDL_BlitSurface(BOARD_BG_TEXTURE, NULL, dest, &coords);
+    SDL_BlitSurface(TEXTURES[BOARD_BG_TEXTURE], NULL, dest, &coords);
 
     // r(ow), c(olumn)
     for (int r = BOARDHEIGHT-1; r > -1; r--) {
@@ -40,7 +40,7 @@ void draw_board(Board* board, SDL_Surface* dest, int x, int y) {
 // draws a single mino on the screen
 int draw_block(Block type, SDL_Surface* dest, int x, int y) {
 
-    SDL_Surface* texture = NULL;
+    Texture texture = BLANK_TEXTURE;
     SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
 
     switch (type) {
@@ -73,7 +73,7 @@ int draw_block(Block type, SDL_Surface* dest, int x, int y) {
         break;
     }
     
-    return SDL_BlitSurface(texture, NULL, dest, &coords);
+    return SDL_BlitSurface(TEXTURES[texture], NULL, dest, &coords);
 }
 
 
@@ -120,7 +120,7 @@ void draw_preview(Game* game, SDL_Surface* dest, int x, int y) {
     if (dest == NULL)  { return; }
 
     SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
-    SDL_BlitSurface(PREVIEW_FRAME_TEXTURE, NULL, dest, &coords);
+    SDL_BlitSurface(TEXTURES[PREVIEW_FRAME_TEXTURE], NULL, dest, &coords);
 
     Piece dummy = game->next_piece;
     dummy.x = 0;
@@ -150,15 +150,15 @@ void draw_stats(Game* game, SDL_Surface* dest, int x, int y) {
     if (dest == NULL)  { return; }
 
     SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
-    SDL_BlitSurface(SCORE_TEXTURE, NULL, dest, &coords);
+    SDL_BlitSurface(TEXTURES[SCORE_TEXTURE], NULL, dest, &coords);
     draw_number(game->score, 6, dest, x, y + 64);
     
     coords = (SDL_Rect){x, y + 128, 0, 0};
-    SDL_BlitSurface(LINES_TEXTURE, NULL, dest, &coords);
+    SDL_BlitSurface(TEXTURES[LINES_TEXTURE], NULL, dest, &coords);
     draw_number(game->lines_cleared, 6, dest, x, y + 192);
 
     coords = (SDL_Rect){x, y + 256, 0, 0};
-    SDL_BlitSurface(LEVEL_TEXTURE, NULL, dest, &coords);
+    SDL_BlitSurface(TEXTURES[LEVEL_TEXTURE], NULL, dest, &coords);
     draw_number(game->level, 2, dest, x, y + 320);
 }
 
@@ -176,17 +176,17 @@ void draw_number(int number, int places, SDL_Surface* dest, int x, int y) {
         number /= 10;
 
         coords = (SDL_Rect){x + (BLOCKSIZE * i), y, 0, 0};
-        SDL_BlitSurface(NUMBER_TEXTURE[digit], NULL, dest, &coords);
+        SDL_BlitSurface(TEXTURES[N0_TEXTURE+digit], NULL, dest, &coords);
     }
 }
 
 
 // wrapper over SDL_BlitSurface so i dont need to screw with rects
-int draw_image(SDL_Surface* src, SDL_Surface* dest, int x, int y) {
+int draw_image(Texture index, SDL_Surface* dest, int x, int y) {
 
-    if (src == NULL) { return -1; }
+    //if (src == NULL) { return -1; }
     if (dest == NULL)  { return -1; }
 
     SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
-    return SDL_BlitSurface(src, NULL, dest, &coords);
+    return SDL_BlitSurface(TEXTURES[index], NULL, dest, &coords);
 }

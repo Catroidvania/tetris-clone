@@ -6,6 +6,18 @@
 #include "gamepad.h"
 
 
+Gamepad RESET_GAMEPAD = {
+        .button_up = 0,
+        .button_down = 0,
+        .button_left = 0,
+        .button_right = 0,
+        .button_a = 0,
+        .button_b = 0,
+        .das_left_counter = 0,
+        .das_right_counter = 0
+    };
+
+
 // update state of buttons so we can use our own key repeat delays
 // should only be called once per frame
 void update_gamepad(SDL_Event* event, Gamepad* gp) {

@@ -15,7 +15,7 @@ int init_game(Game* game, int seed) {
     if (game == NULL) { return -1; }
 
     clear_board(&game->board);
-    game->keystates = (Gamepad){0};
+    game->keystates = RESET_GAMEPAD;
 
     // unseeded rng, call seed_rng later
     game->rng_state = (RNGState){seed};
@@ -323,10 +323,13 @@ void reset_game(Game* game) {
 
     if (game == NULL) { return; }
 
+    game->current_piece = randomize_piece(game, NULL); 
+    game->next_piece = randomize_piece(game, &game->current_piece);
+
     clear_board(&game->board);
     game->level = 0;
     game->lines_cleared = 0;
     game->score = 0;
     game->soft_drop_bonus = 0;
-    game->keystates = (Gamepad){0};
+    game->keystates = RESET_GAMEPAD;
 }

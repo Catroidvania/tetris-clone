@@ -14,5 +14,6 @@ typedef struct Gamepad {
         das_left_counter, das_right_counter;
 } Gamepad;
 
+extern Gamepad RESET_GAMEPAD;
 
 void update_gamepad(SDL_Event* event, Gamepad* gp);
