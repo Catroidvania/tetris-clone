@@ -19,4 +19,4 @@
 #include "gamepad.h"
 #include "pieces.h"
 #include "rendering.h"
-
+#include "selector.h"

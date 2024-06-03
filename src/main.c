@@ -57,13 +57,24 @@ int main() {
         move_current_piece(&application.game, frame);
         piece_gravity(&application.game, frame);
         update_score(&application.game, clear_lines(&application.game));
+    } else if (application.screen == MAINMENU) {
+        if (application.game.keystates.button_a) {
+            if (MAIN_MENU_SELECTOR.current == &SOLO_BUTTON) {
+                application.screen = GAMECOUNTDOWN;
+            } else if (MAIN_MENU_SELECTOR.current == &QUIT_BUTTON) {
+                run = 0;
+            }
+        }
+        update_selected(&MAIN_MENU_SELECTOR, &application.game.keystates);
+        application.game.keystates = RESET_GAMEPAD;
     }
+
+    // clear for drawing
+    clear_window(&application);
 
     // draw game stuff
     if (application.screen == GAMEPLAYING || application.screen == GAMECOUNTDOWN || application.screen == GAMEOVER) {
-        // clear for drawing
-        clear_window(&application);
-        
+
         // draw stuff
         draw_board(&application.game.board, application.window_surface, SPBOARDX, SPBOARDY);
         draw_stats(&application.game, application.window_surface, SPSTATSX, SPSTATSY);
@@ -96,8 +107,11 @@ int main() {
 
         if (application.game.keystates.button_a || application.game.keystates.button_b) {
             reset_game(&application.game);
-            application.screen = GAMECOUNTDOWN;
+            application.screen = MAINMENU;
         }
+    } else if (application.screen == MAINMENU) {
+        draw_image(SPLASH_TEXTURE, application.window_surface, 0, 0);
+        draw_selector(&MAIN_MENU_SELECTOR, application.window_surface, 170, 170);
     }
 
         // refresh window

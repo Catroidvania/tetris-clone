@@ -10,6 +10,7 @@
 #include "block.h"
 #include "board.h"
 #include "pieces.h"
+#include "selector.h"
 
 // singleplayer rendering coordinates
 #define SPBOARDX 300
@@ -31,3 +32,4 @@ void draw_preview(Game* game, SDL_Surface* dest, int x, int y);
 void draw_stats(Game* game, SDL_Surface* dest, int x, int y);
 void draw_number(int number, int places, SDL_Surface* dest, int x, int y);
 int draw_image(Texture index, SDL_Surface* dest, int x, int y);
+void draw_selector(Selector* menu, SDL_Surface* dest, int x, int y);

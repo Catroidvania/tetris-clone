@@ -53,8 +53,7 @@ int init_app(App* app, int rng_seed) {
     app->rng_seed = rng_seed;
     init_game(&app->game, rng_seed);
 
-    // TODO change when a main menu is added lol
-    app->screen = GAMECOUNTDOWN;
+    app->screen = MAINMENU;
 
     return 0;
 }

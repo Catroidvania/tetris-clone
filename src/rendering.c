@@ -190,3 +190,19 @@ int draw_image(Texture index, SDL_Surface* dest, int x, int y) {
     SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
     return SDL_BlitSurface(TEXTURES[index], NULL, dest, &coords);
 }
+
+
+// draws a selector menu
+void draw_selector(Selector* menu, SDL_Surface* dest, int x, int y) {
+    
+    if (menu == NULL) { return; }
+    if (dest == NULL) { return; }
+
+    for (int b = 0; b < menu->button_count; b++) {
+        if (menu->buttons[b] == menu->current) {
+            draw_image(menu->buttons[b]->texture + 1, dest, x + menu->buttons[b]->x, y + menu->buttons[b]->y);
+        } else {
+            draw_image(menu->buttons[b]->texture , dest, x + menu->buttons[b]->x, y + menu->buttons[b]->y);
+        }
+    }
+}
