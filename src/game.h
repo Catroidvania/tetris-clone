@@ -6,6 +6,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <stdlib.h>
 
 #include "board.h"
 #include "gamepad.h"
@@ -24,7 +25,7 @@ typedef struct Game {
     Gamepad keystates;
     Piece current_piece, next_piece;
     RNGState rng_state;
-    int score, level, lines_cleared, soft_drop_bonus;
+    int score, level, lines_cleared, soft_drop_bonus, garbage;
 
 } Game;
 
@@ -44,3 +45,5 @@ void update_score(Game* game, int lines);
 Piece randomize_piece(Game* game, Piece* piece);
 void reset_game(Game* game, int new_seed);
 void hard_drop(Game*);
+int send_garbage(Game* from, Game* to, int lines);
+void spawn_garbage(Game* game); 

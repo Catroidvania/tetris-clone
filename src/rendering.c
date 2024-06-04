@@ -24,8 +24,7 @@ void draw_board(Board* board, SDL_Surface* dest, int x, int y) {
     if (board == NULL) { return; }
     if (dest == NULL)  { return; }
 
-    SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
-    SDL_BlitSurface(TEXTURES[BOARD_BG_TEXTURE], NULL, dest, &coords);
+    //SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
 
     // r(ow), c(olumn)
     for (int r = BOARDHEIGHT-1; r > -1; r--) {
@@ -70,6 +69,9 @@ int draw_block(Block type, SDL_Surface* dest, int x, int y) {
         break;
     case GHOST:
         texture = GHOST_TEXTURE;
+        break;
+    case GARBAGE:
+        texture = GARBAGE_TEXTURE;
         break;
     }
     
@@ -204,5 +206,21 @@ void draw_selector(Selector* menu, SDL_Surface* dest, int x, int y) {
         } else {
             draw_image(menu->buttons[b]->texture , dest, x + menu->buttons[b]->x, y + menu->buttons[b]->y);
         }
+    }
+}
+
+
+// draws red tinted blocks from the top of the board downwarsd based on how much garbage is incoming
+void draw_incoming(Game* game, SDL_Surface* dest, int x, int y) {
+    
+    if (game == NULL) { return; }
+    if (dest == NULL)  { return; }
+
+    SDL_Rect coords = (SDL_Rect){x, y, 0, 0};
+    SDL_BlitSurface(TEXTURES[BOARD_BG_TEXTURE], NULL, dest, &coords);
+
+    for (int r = BOARDHEIGHT-1; r > BOARDHEIGHT - game->garbage - 1; r--) {
+        draw_image( INCOMING_TEXTURE, dest, BOARDBORDERSIZE + x,
+                    (BOARDHEIGHT-1 - r) * BLOCKSIZE + BOARDBORDERSIZE + y);
     }
 }

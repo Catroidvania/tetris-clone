@@ -46,7 +46,9 @@ const char* texture_filepaths[TEXTURE_COUNT] = {
         "assets/vs_cpu_off.png",
         "assets/vs_cpu_on.png",
         "assets/quit_off.png",
-        "assets/quit_on.png"
+        "assets/quit_on.png",
+        "assets/garbage.png",
+        "assets/incoming.png"
     };
 
 

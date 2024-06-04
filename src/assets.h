@@ -14,7 +14,7 @@
 #define BOARDBORDERSIZE 20
 #define PREVIEWBORDERSIZE 20
 
-#define TEXTURE_COUNT 36
+#define TEXTURE_COUNT 38
 
 // TODO
 // when adding a new texture:
@@ -60,7 +60,9 @@ typedef enum TextureIndex {
     VS_CPU_BTN_OFF_TEXTURE,
     VS_CPU_BTN_ON_TEXTURE,
     QUIT_BTN_OFF_TEXTURE,
-    QUIT_BTN_ON_TEXTURE
+    QUIT_BTN_ON_TEXTURE,
+    GARBAGE_TEXTURE,
+    INCOMING_TEXTURE
 } Texture;
 
 

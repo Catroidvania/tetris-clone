@@ -28,6 +28,7 @@ int init_game(Game* game, int seed) {
     game->score = 0;
     game->lines_cleared = 0;
     game->soft_drop_bonus = 0;
+    game->garbage = 0;
 
     return 0;
 }
@@ -188,6 +189,25 @@ void piece_gravity(Game* game, int frame) {
         // duplicateish of lock_current_piece but ah well
         solidify_piece(&game->current_piece, &game->board);
         swap_pieces(game);
+
+        // spawn garbage if no rows are cleared
+
+        int filled;
+        for (int r = 0; r < BOARDHEIGHT; r++) {
+            filled = 1;
+            for (int c = 0; c < BOARDWIDTH; c++) {
+                if (game->board.blocks[POINT(c, r, BOARDWIDTH)] == BLANK) {
+                    filled = 0;
+                    break;
+                }
+            }
+            if (filled) {
+                break;
+            }
+        }
+        if (!filled) {
+            spawn_garbage(game);
+        }
         // stop soft dropping when next piece spawns
         game->keystates.button_down = 0;
     } else {
@@ -350,5 +370,79 @@ void hard_drop(Game* game) {
 
     solidify_piece(&game->current_piece, &game->board);
     swap_pieces(game);
+
+    int filled;
+    for (int r = 0; r < BOARDHEIGHT; r++) {
+        filled = 1;
+        for (int c = 0; c < BOARDWIDTH; c++) {
+            if (game->board.blocks[POINT(c, r, BOARDWIDTH)] == BLANK) {
+                filled = 0;
+                break;
+            }
+        }
+        if (filled) {
+            break;
+        }
+    }
+    if (!filled) {
+        spawn_garbage(game);
+    }
+
     game->keystates.button_up = 0;
+}
+
+
+// handles sending garbage and reducng the senders own
+// returns the number of garbage sent
+int send_garbage(Game* from, Game* to, int lines) {
+    
+    if (from == NULL) { return 0; }
+    if (to == NULL) { return 0; }
+    if (lines < 1) { return 0; }
+
+
+    if (from->garbage >= lines) {
+        from->garbage -= lines;
+        return 0;
+    } else {
+        int extra = -(from->garbage - lines);
+        from->garbage = 0;
+        to->garbage += extra;
+        return extra;
+    }
+}
+
+
+// spawns garbage rows at the bottom of the screen
+void spawn_garbage(Game* game) {
+    
+    if (game == NULL) { return; }
+    if (game->garbage < 1) { return; }
+
+    for (int t = 0; t < game->garbage; t++) {
+        for (int i = 199; i > -1; i--) {
+            if (i-10 < 0) {
+                game->board.blocks[i] = BLANK;
+            } else {
+                game->board.blocks[i] = game->board.blocks[i-10];
+            }
+        }
+    }
+
+    // this doesnt need to be prng since two players should not be playing identical anyway
+    int gap = rand() % 10;
+
+    for (int r = 0; r < game->garbage; r++) {
+        // randomise the garbage gap a bit
+        // TODO this needs to be tweaked to see how much it should vary
+        if (!(rand() % 7)) {
+            gap = rand() % 10;
+        }
+        for (int c = 0; c < BOARDWIDTH; c++) {
+            if (c == gap) { continue; }
+            game->board.blocks[POINT(c, r, BOARDWIDTH)] = GARBAGE;
+        }
+    }
+
+    game->garbage = 0;
 }

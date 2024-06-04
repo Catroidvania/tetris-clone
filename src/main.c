@@ -15,6 +15,7 @@ int main() {
     int run = 1;
     int start_ms, end_ms, dt;
     int frame = 0, countdown_frame = 0, countdown_counter = 2;
+    int junk = 0, confirm = 0;
 
     srand(time(NULL));
 
@@ -42,6 +43,12 @@ int main() {
         // exit on close window button
         if (event.type == SDL_QUIT) {
             run = 0;
+        } else if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_SPACE && !event.key.repeat) {
+                confirm = 1;
+            } else {
+                confirm = 0;
+            }
         }
 
         // handle keypresses
@@ -79,17 +86,25 @@ int main() {
 
         move_current_piece(&application.game, frame);
         piece_gravity(&application.game, frame);
-        update_score(&application.game, clear_lines(&application.game));
+        junk = clear_lines(&application.game);
+        update_score(&application.game, junk);
 
         if (application.vs_cpu) {
+            send_garbage(&application.game, &application.cpu_game, junk-1);
+
             move_current_piece(&application.cpu_game, frame);
             piece_gravity(&application.cpu_game, frame);
-            update_score(&application.cpu_game, clear_lines(&application.cpu_game));
+            junk = clear_lines(&application.cpu_game);
+            update_score(&application.cpu_game, junk);
+
+            send_garbage(&application.cpu_game, &application.game, junk-1);
         }
 
+    // you can really tell how poorly planned this whole was since main menu code is smack dab in the middle
     } else if (application.screen == MAINMENU) {
         // main menu
-        if (application.game.keystates.button_a) {
+        if (confirm) {
+            confirm = 0;
             if (MAIN_MENU_SELECTOR.current == &SOLO_BUTTON) {
                 reset_game(&application.game, application.rng_seed);
                 application.vs_cpu = 0;
@@ -120,8 +135,8 @@ int main() {
             application.game.keystates = RESET_GAMEPAD;
         }
     } else if (application.screen == GAMEOVER) {
-        if (application.game.keystates.button_a || application.game.keystates.button_b ||
-            application.cpu_game.keystates.button_a || application.cpu_game.keystates.button_b) {
+        if (confirm) {
+            confirm = 0;
             application.screen = MAINMENU;
             application.game.keystates = RESET_GAMEPAD;
             application.local_2p = 0;
@@ -136,6 +151,7 @@ int main() {
 
         // draw stuff
         if (!application.vs_cpu) {
+            draw_incoming(&application.game, application.window_surface, SPBOARDX, SPBOARDY);
             draw_board(&application.game.board, application.window_surface, SPBOARDX, SPBOARDY);
             draw_stats(&application.game, application.window_surface, SPSTATSX, SPSTATSY);
             draw_preview(&application.game, application.window_surface, SPPREVIEWX, SPPREVIEWY);
@@ -143,14 +159,22 @@ int main() {
             draw_piece(&application.game.current_piece, application.window_surface, SPBOARDX, SPBOARDY);
         } else {
             // player
+            draw_incoming(&application.game, application.window_surface, VSBOARDX, VSBOARDY);
             draw_board(&application.game.board, application.window_surface, VSBOARDX, VSBOARDY);
+            if (!application.local_2p) {
             draw_stats(&application.game, application.window_surface, VSSTATSX, VSSTATSY);
+            }
             draw_preview(&application.game, application.window_surface, VSPREVIEWX, VSPREVIEWY);
             draw_ghost(&application.game, application.window_surface, VSBOARDX, VSBOARDY);
             draw_piece(&application.game.current_piece, application.window_surface, VSBOARDX, VSBOARDY);
 
             // cpu
+            draw_incoming(&application.cpu_game, application.window_surface, CPUBOARDX, CPUBOARDY);
             draw_board(&application.cpu_game.board, application.window_surface, CPUBOARDX, CPUBOARDY);
+            if (application.local_2p) {
+                draw_preview(&application.cpu_game, application.window_surface, CPUPREVIEWX, CPUPREVIEWY);
+                draw_ghost(&application.cpu_game, application.window_surface, CPUBOARDX, CPUBOARDY);
+            }
             draw_piece(&application.cpu_game.current_piece, application.window_surface, CPUBOARDX, CPUBOARDY);
         }
     }

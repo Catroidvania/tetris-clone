@@ -34,6 +34,9 @@
 #define CPUBOARDX 580
 #define CPUBOARDY 20
 
+#define CPUPREVIEWX 396
+#define CPUPREVIEWY 532
+
 
 // rendering functions go here to avoid any circular dependancies
 void clear_window(App* app);
@@ -46,3 +49,4 @@ void draw_stats(Game* game, SDL_Surface* dest, int x, int y);
 void draw_number(int number, int places, SDL_Surface* dest, int x, int y);
 int draw_image(Texture index, SDL_Surface* dest, int x, int y);
 void draw_selector(Selector* menu, SDL_Surface* dest, int x, int y);
+void draw_incoming(Game* game, SDL_Surface* dest, int x, int y);
