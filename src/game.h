@@ -42,5 +42,5 @@ int gravity_delay(int level);
 void piece_gravity(Game* game, int frame);
 void update_score(Game* game, int lines);
 Piece randomize_piece(Game* game, Piece* piece);
-void reset_game(Game* game);
+void reset_game(Game* game, int new_seed);
 void hard_drop(Game*);

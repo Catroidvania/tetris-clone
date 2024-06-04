@@ -16,11 +16,24 @@
 #define SPBOARDX 300
 #define SPBOARDY 20
 
+#define VSBOARDX 20
+#define VSBOARDY 20
+
 #define SPPREVIEWX 676
 #define SPPREVIEWY 20
 
+#define VSPREVIEWX 396
+#define VSPREVIEWY 20
+
 #define SPSTATSX 676
 #define SPSTATSY 220
+
+#define VSSTATSX 384
+#define VSSTATSY 220
+
+#define CPUBOARDX 580
+#define CPUBOARDY 20
+
 
 // rendering functions go here to avoid any circular dependancies
 void clear_window(App* app);

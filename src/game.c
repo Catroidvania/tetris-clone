@@ -316,9 +316,11 @@ Piece randomize_piece(Game* game, Piece* piece) {
     return new_piece;
 }
 
-void reset_game(Game* game) {
+void reset_game(Game* game, int new_seed) {
 
     if (game == NULL) { return; }
+
+    game->rng_state = (RNGState){new_seed};
 
     game->current_piece = randomize_piece(game, NULL); 
     game->next_piece = randomize_piece(game, &game->current_piece);

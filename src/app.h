@@ -34,8 +34,9 @@ typedef struct Application {
     SDL_Surface* window_surface;
 
     Screen screen;
-    Game game;
-    int rng_seed;
+
+    Game game, cpu_game;
+    int rng_seed, vs_cpu, player_win;
 
 } App;
 

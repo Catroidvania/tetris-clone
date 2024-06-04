@@ -52,8 +52,11 @@ int init_app(App* app, int rng_seed) {
     // for starting future games that need the same rng
     app->rng_seed = rng_seed;
     init_game(&app->game, rng_seed);
+    init_game(&app->cpu_game, rng_seed);
 
     app->screen = MAINMENU;
+    app->vs_cpu = 0;
+    app->player_win = 0;
 
     return 0;
 }

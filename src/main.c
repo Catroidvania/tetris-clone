@@ -33,6 +33,9 @@ int main() {
         // get time at start of frame
         start_ms = SDL_GetTicks64();
 
+        // might as well keep randomising this thing lmao
+        application.rng_seed = rand();
+
         // get window events
         SDL_PollEvent(&event);
 
@@ -50,16 +53,40 @@ int main() {
         // gameover check
         if (piece_collision(&application.game.current_piece, &application.game.board)) {
             application.screen = GAMEOVER;
-            // i should not that this does not set all elements to 0, it just does that 
             application.game.keystates = RESET_GAMEPAD;
+            application.player_win = 0;
+        }
+
+        if (application.vs_cpu && piece_collision(&application.cpu_game.current_piece, &application.cpu_game.board)) {
+            application.screen = GAMEOVER;
+            application.game.keystates = RESET_GAMEPAD;
+            application.player_win = 1;
         }
 
         move_current_piece(&application.game, frame);
         piece_gravity(&application.game, frame);
         update_score(&application.game, clear_lines(&application.game));
+
+        /*if (application.vs_cpu) {
+            move_current_piece(&application.cpu_game, frame);
+            piece_gravity(&application.cpu_game, frame);
+            update_score(&application.cpu_game, clear_lines(&application.game));
+        }*/
+
     } else if (application.screen == MAINMENU) {
+
+        // main menu
         if (application.game.keystates.button_a) {
             if (MAIN_MENU_SELECTOR.current == &SOLO_BUTTON) {
+                reset_game(&application.game, application.rng_seed);
+                application.vs_cpu = 0;
+                application.player_win = 0;
+                application.screen = GAMECOUNTDOWN;
+            } else if (MAIN_MENU_SELECTOR.current == &VS_CPU_BUTTON) {
+                reset_game(&application.game, application.rng_seed);
+                reset_game(&application.cpu_game, application.rng_seed);
+                application.vs_cpu = 1;
+                application.player_win = 0;
                 application.screen = GAMECOUNTDOWN;
             } else if (MAIN_MENU_SELECTOR.current == &QUIT_BUTTON) {
                 run = 0;
@@ -76,11 +103,24 @@ int main() {
     if (application.screen == GAMEPLAYING || application.screen == GAMECOUNTDOWN || application.screen == GAMEOVER) {
 
         // draw stuff
-        draw_board(&application.game.board, application.window_surface, SPBOARDX, SPBOARDY);
-        draw_stats(&application.game, application.window_surface, SPSTATSX, SPSTATSY);
-        draw_preview(&application.game, application.window_surface, SPPREVIEWX, SPPREVIEWY);
-        draw_ghost(&application.game, application.window_surface, SPBOARDX, SPBOARDY);
-        draw_piece(&application.game.current_piece, application.window_surface, SPBOARDX, SPBOARDY);
+        if (!application.vs_cpu) {
+            draw_board(&application.game.board, application.window_surface, SPBOARDX, SPBOARDY);
+            draw_stats(&application.game, application.window_surface, SPSTATSX, SPSTATSY);
+            draw_preview(&application.game, application.window_surface, SPPREVIEWX, SPPREVIEWY);
+            draw_ghost(&application.game, application.window_surface, SPBOARDX, SPBOARDY);
+            draw_piece(&application.game.current_piece, application.window_surface, SPBOARDX, SPBOARDY);
+        } else {
+            // player
+            draw_board(&application.game.board, application.window_surface, VSBOARDX, VSBOARDY);
+            draw_stats(&application.game, application.window_surface, VSSTATSX, VSSTATSY);
+            draw_preview(&application.game, application.window_surface, VSPREVIEWX, VSPREVIEWY);
+            draw_ghost(&application.game, application.window_surface, VSBOARDX, VSBOARDY);
+            draw_piece(&application.game.current_piece, application.window_surface, VSBOARDX, VSBOARDY);
+
+            // cpu
+            draw_board(&application.cpu_game.board, application.window_surface, CPUBOARDX, CPUBOARDY);
+            draw_piece(&application.cpu_game.current_piece, application.window_surface, CPUBOARDX, CPUBOARDY);
+        }
     }
 
 
@@ -97,17 +137,32 @@ int main() {
             application.screen = GAMEPLAYING;
             countdown_frame = 0;
             countdown_counter = 2;
-            application.game.keystates = RESET_GAMEPAD;
+            application.game.keystates.das_left_counter = 0;
+            application.game.keystates.das_right_counter = 0;
+            application.player_win = 0;
         } else {
-            draw_image(BIG_1_TEXTURE +countdown_counter, application.window_surface, SPBOARDX, SPBOARDY);
+            if (!application.vs_cpu) {
+                draw_image(BIG_1_TEXTURE + countdown_counter, application.window_surface, SPBOARDX, SPBOARDY);
+            } else {
+                draw_image(BIG_1_TEXTURE + countdown_counter, application.window_surface, VSBOARDX, VSBOARDY);
+                draw_image(BIG_1_TEXTURE + countdown_counter, application.window_surface, CPUBOARDX, CPUBOARDY);
+            }
         }
     // game over graphic
     } else if (application.screen == GAMEOVER) {
-        draw_image(GAME_OVER_TEXTURE, application.window_surface, SPBOARDX, SPBOARDY);
+        if (!application.vs_cpu) {
+            draw_image(GAME_OVER_TEXTURE, application.window_surface, SPBOARDX, SPBOARDY);
+        } else {
+            if (!application.player_win) {
+                draw_image(GAME_OVER_TEXTURE, application.window_surface, VSBOARDX, VSBOARDY);
+            } else { 
+                draw_image(GAME_OVER_TEXTURE, application.window_surface, CPUBOARDX, CPUBOARDY);
+            }
+        }
 
         if (application.game.keystates.button_a || application.game.keystates.button_b) {
-            reset_game(&application.game);
             application.screen = MAINMENU;
+            application.game.keystates = RESET_GAMEPAD;
         }
     } else if (application.screen == MAINMENU) {
         draw_image(SPLASH_TEXTURE, application.window_surface, 0, 0);
