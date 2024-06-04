@@ -47,19 +47,33 @@ int main() {
         // handle keypresses
         update_gamepad(&event, &application.game.keystates);
 
+        if (application.local_2p) {
+            update_gamepad(&event, &application.cpu_game.keystates);
+        }
+
     // update game stuff
     if (application.screen == GAMEPLAYING) {
         
         // gameover check
         if (piece_collision(&application.game.current_piece, &application.game.board)) {
             application.screen = GAMEOVER;
-            application.game.keystates = RESET_GAMEPAD;
+            if (application.local_2p) {
+                application.game.keystates = LOCAL1_GAMEPAD;
+                application.cpu_game.keystates = LOCAL2_GAMEPAD;
+            } else {
+                application.game.keystates = RESET_GAMEPAD;
+            }
             application.player_win = 0;
         }
 
         if (application.vs_cpu && piece_collision(&application.cpu_game.current_piece, &application.cpu_game.board)) {
             application.screen = GAMEOVER;
-            application.game.keystates = RESET_GAMEPAD;
+            if (application.local_2p) {
+                application.game.keystates = LOCAL1_GAMEPAD;
+                application.cpu_game.keystates = LOCAL2_GAMEPAD;
+            } else {
+                application.game.keystates = RESET_GAMEPAD;
+            }
             application.player_win = 1;
         }
 
@@ -67,14 +81,13 @@ int main() {
         piece_gravity(&application.game, frame);
         update_score(&application.game, clear_lines(&application.game));
 
-        /*if (application.vs_cpu) {
+        if (application.vs_cpu) {
             move_current_piece(&application.cpu_game, frame);
             piece_gravity(&application.cpu_game, frame);
-            update_score(&application.cpu_game, clear_lines(&application.game));
-        }*/
+            update_score(&application.cpu_game, clear_lines(&application.cpu_game));
+        }
 
     } else if (application.screen == MAINMENU) {
-
         // main menu
         if (application.game.keystates.button_a) {
             if (MAIN_MENU_SELECTOR.current == &SOLO_BUTTON) {
@@ -88,12 +101,31 @@ int main() {
                 application.vs_cpu = 1;
                 application.player_win = 0;
                 application.screen = GAMECOUNTDOWN;
+                if (SDL_GetModState()) {
+                    application.local_2p = 1;
+                    application.game.keystates = LOCAL1_GAMEPAD;
+                    application.cpu_game.keystates = LOCAL2_GAMEPAD;
+                } else {
+                    application.local_2p = 0;
+                }
             } else if (MAIN_MENU_SELECTOR.current == &QUIT_BUTTON) {
                 run = 0;
             }
         }
         update_selected(&MAIN_MENU_SELECTOR, &application.game.keystates);
-        application.game.keystates = RESET_GAMEPAD;
+        if (application.local_2p) {
+            application.game.keystates = LOCAL1_GAMEPAD;
+            application.cpu_game.keystates = LOCAL2_GAMEPAD;
+        } else {
+            application.game.keystates = RESET_GAMEPAD;
+        }
+    } else if (application.screen == GAMEOVER) {
+        if (application.game.keystates.button_a || application.game.keystates.button_b ||
+            application.cpu_game.keystates.button_a || application.cpu_game.keystates.button_b) {
+            application.screen = MAINMENU;
+            application.game.keystates = RESET_GAMEPAD;
+            application.local_2p = 0;
+        }
     }
 
     // clear for drawing
@@ -158,11 +190,6 @@ int main() {
             } else { 
                 draw_image(GAME_OVER_TEXTURE, application.window_surface, CPUBOARDX, CPUBOARDY);
             }
-        }
-
-        if (application.game.keystates.button_a || application.game.keystates.button_b) {
-            application.screen = MAINMENU;
-            application.game.keystates = RESET_GAMEPAD;
         }
     } else if (application.screen == MAINMENU) {
         draw_image(SPLASH_TEXTURE, application.window_surface, 0, 0);
