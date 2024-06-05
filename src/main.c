@@ -236,7 +236,9 @@ int main() {
         } else {
             if (!application.player_win) {
                 draw_image(GAME_OVER_TEXTURE, application.window_surface, VSBOARDX, VSBOARDY);
-            } else { 
+                draw_image(GAME_WIN_TEXTURE, application.window_surface, CPUBOARDX, CPUBOARDY);
+            } else {
+                draw_image(GAME_WIN_TEXTURE, application.window_surface, VSBOARDX, VSBOARDY);
                 draw_image(GAME_OVER_TEXTURE, application.window_surface, CPUBOARDX, CPUBOARDY);
             }
         }
