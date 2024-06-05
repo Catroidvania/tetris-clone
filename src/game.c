@@ -124,7 +124,7 @@ int clear_lines(Game* game) {
 
     if (game == NULL) { return 0; }
 
-    int is_full,  cleared = 0;
+    int is_full, cleared = 0;
 
     // row, column
     for (int r = 19; r > -1; r--) {
@@ -175,12 +175,13 @@ int gravity_delay(int level) {
 
 // moves the piece down at level specific frame intervals
 // will lock the piece if it cannot go down any further
-void piece_gravity(Game* game, int frame) {
+// return 1 if the piece was locked, 0 otherwise
+int piece_gravity(Game* game, int frame) {
 
-    if (game == NULL) { return; }
+    if (game == NULL) { return 0; }
     // make sure we should actually gravity
     // and we are not soft droppping
-    if (frame % gravity_delay(game->level)) { return; }
+    if (frame % gravity_delay(game->level)) { return 0; }
 
     Piece test_piece = game->current_piece;
     test_piece.y -= 1;
@@ -189,9 +190,10 @@ void piece_gravity(Game* game, int frame) {
         // duplicateish of lock_current_piece but ah well
         solidify_piece(&game->current_piece, &game->board);
         swap_pieces(game);
+        // stop soft dropping when next piece spawns
+        game->keystates.button_down = 0;
 
         // spawn garbage if no rows are cleared
-
         int filled;
         for (int r = 0; r < BOARDHEIGHT; r++) {
             filled = 1;
@@ -205,26 +207,34 @@ void piece_gravity(Game* game, int frame) {
                 break;
             }
         }
+
         if (!filled) {
             spawn_garbage(game);
         }
-        // stop soft dropping when next piece spawns
-        game->keystates.button_down = 0;
+
+        return 1;
     } else {
         game->current_piece = test_piece;
+        return 0;
     }
 }
 
 
 // updates score, lines cleared, and level based on lines cleared
-void update_score(Game* game, int lines) {
+// return 1 if a level was gained, 0 otherwise
+int update_score(Game* game, int lines) {
     
-    if (game == NULL) { return; }
-    if (!lines) { return; }
+    if (game == NULL) { return 0; }
+    if (!lines) { return 0; }
+
+    int level_up = 0;
 
     game->lines_cleared += lines;
     // scoring is done using the resulting level
-    if (game->lines_cleared > game->level * 10 + 10) { game->level += 1; } // level is not capped atm
+    if (game->lines_cleared >= game->level * 10 + 10) { 
+        game->level += 1;
+        level_up = 1;
+    }
 
     switch (lines) {
     case 1:
@@ -241,6 +251,7 @@ void update_score(Game* game, int lines) {
         break;
     }
 
+    return level_up;
    // printf("level: %d | lines: %d | score: %d\n", game->level, game->lines_cleared, game->score);
 }
 
@@ -367,6 +378,7 @@ void hard_drop(Game* game) {
     }
     test_piece.y++;
     game->current_piece = test_piece;
+    game->keystates.button_up = 0;
 
     solidify_piece(&game->current_piece, &game->board);
     swap_pieces(game);
@@ -388,7 +400,7 @@ void hard_drop(Game* game) {
         spawn_garbage(game);
     }
 
-    game->keystates.button_up = 0;
+    Mix_PlayChannel(-1, SOUNDS[HARD_DROP_SFX], 0);
 }
 
 
@@ -445,4 +457,6 @@ void spawn_garbage(Game* game) {
     }
 
     game->garbage = 0;
+
+    Mix_PlayChannel(-1, SOUNDS[GARBAGE_SFX], 0);
 }

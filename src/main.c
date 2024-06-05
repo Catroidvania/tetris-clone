@@ -71,6 +71,7 @@ int main() {
                 application.game.keystates = RESET_GAMEPAD;
             }
             application.player_win = 0;
+            Mix_PlayChannel(-1, SOUNDS[GAME_OVER_SFX], 0);
         }
 
         if (application.vs_cpu && piece_collision(&application.cpu_game.current_piece, &application.cpu_game.board)) {
@@ -82,22 +83,36 @@ int main() {
                 application.game.keystates = RESET_GAMEPAD;
             }
             application.player_win = 1;
+            Mix_PlayChannel(-1, SOUNDS[GAME_OVER_SFX], 0);
         }
 
         move_current_piece(&application.game, frame);
-        piece_gravity(&application.game, frame);
+        if (piece_gravity(&application.game, frame)) {
+            Mix_PlayChannel(-1, SOUNDS[SOLIDIFY_SFX], 0);
+        }
         junk = clear_lines(&application.game);
-        update_score(&application.game, junk);
+
+        if (update_score(&application.game, junk) && !application.local_2p) {
+            Mix_PlayChannel(-1, SOUNDS[LEVEL_UP_SFX], 0);
+        } else if (junk) {
+            Mix_PlayChannel(-1, SOUNDS[LINE_CLEAR_SFX], 0);
+        }
 
         if (application.vs_cpu) {
             send_garbage(&application.game, &application.cpu_game, junk-1);
 
             move_current_piece(&application.cpu_game, frame);
-            piece_gravity(&application.cpu_game, frame);
+            if (piece_gravity(&application.cpu_game, frame)) {
+                Mix_PlayChannel(-1, SOUNDS[SOLIDIFY_SFX], 0);
+            }
             junk = clear_lines(&application.cpu_game);
             update_score(&application.cpu_game, junk);
 
             send_garbage(&application.cpu_game, &application.game, junk-1);
+
+             if (junk) {
+                Mix_PlayChannel(-1, SOUNDS[LINE_CLEAR_SFX], 0);
+            }
         }
 
     // you can really tell how poorly planned this whole was since main menu code is smack dab in the middle
@@ -110,6 +125,7 @@ int main() {
                 application.vs_cpu = 0;
                 application.player_win = 0;
                 application.screen = GAMECOUNTDOWN;
+                Mix_PlayChannel(-1, SOUNDS[COUNTDOWN23_SFX], 0);
             } else if (MAIN_MENU_SELECTOR.current == &VS_CPU_BUTTON) {
                 reset_game(&application.game, application.rng_seed);
                 reset_game(&application.cpu_game, application.rng_seed);
@@ -123,10 +139,13 @@ int main() {
                 } else {
                     application.local_2p = 0;
                 }
+                Mix_PlayChannel(-1, SOUNDS[COUNTDOWN23_SFX], 0);
             } else if (MAIN_MENU_SELECTOR.current == &QUIT_BUTTON) {
                 run = 0;
+                Mix_PlayChannel(-1, SOUNDS[SELECT_SFX], 0);
             }
         }
+
         update_selected(&MAIN_MENU_SELECTOR, &application.game.keystates);
         if (application.local_2p) {
             application.game.keystates = LOCAL1_GAMEPAD;
@@ -140,6 +159,7 @@ int main() {
             application.screen = MAINMENU;
             application.game.keystates = RESET_GAMEPAD;
             application.local_2p = 0;
+            Mix_PlayChannel(-1, SOUNDS[SELECT_SFX], 0);
         }
     }
 
@@ -185,6 +205,11 @@ int main() {
         if (!countdown_frame) {
             countdown_frame = frame;
         } else if (frame >= countdown_frame + 60) {
+            if (countdown_counter == 0) {
+                Mix_PlayChannel(-1, SOUNDS[COUNTDOWN1_SFX], 0);
+            } else {
+                Mix_PlayChannel(-1, SOUNDS[COUNTDOWN23_SFX], 0);
+            }
             countdown_counter--;
             countdown_frame = frame;
         }

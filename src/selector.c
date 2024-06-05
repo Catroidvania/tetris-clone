@@ -55,15 +55,19 @@ int update_selected(Selector* menu, Gamepad* inputs) {
 
     if (inputs->button_up && menu->current->up != NULL) {
         menu->current = menu->current->up;
+        Mix_PlayChannel(-1, SOUNDS[MENU_BLIP_SFX], 0);
         return 1;
     } else if (inputs->button_down && menu->current->down != NULL) {
         menu->current = menu->current->down;
+        Mix_PlayChannel(-1, SOUNDS[MENU_BLIP_SFX], 0);
         return 1;
     } else if (inputs->button_left && menu->current->left != NULL) {
         menu->current = menu->current->left;
+        Mix_PlayChannel(-1, SOUNDS[MENU_BLIP_SFX], 0);
         return 1;
     } else if (inputs->button_right && menu->current->right != NULL) {
         menu->current = menu->current->right;
+        Mix_PlayChannel(-1, SOUNDS[MENU_BLIP_SFX], 0);
         return 1;
     } 
 

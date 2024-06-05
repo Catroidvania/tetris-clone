@@ -52,6 +52,21 @@ const char* texture_filepaths[TEXTURE_COUNT] = {
     };
 
 
+Mix_Chunk* SOUNDS[SOUND_COUNT];
+const char* sound_filepaths[SOUND_COUNT] = {
+        "assets/menu_blip.wav",
+        "assets/1.wav",
+        "assets/3_2.wav",
+        "assets/game_over.wav",
+        "assets/garbage.wav",
+        "assets/hard_drop.wav",
+        "assets/line_clear.wav",
+        "assets/select.wav",
+        "assets/solidify.wav",
+        "assets/level_up.wav"
+    };
+
+
 // load png function with error checking
 //int load_png(SDL_Surface** surface, char* filepath) {
 int load_png(Texture index, const char* filepath) {
@@ -72,6 +87,21 @@ int load_png(Texture index, const char* filepath) {
 }
 
 
+// loads a .wav audio file into the sfx array
+int load_wav(Sound index, const char* filepath) {
+    
+    SOUNDS[index] = NULL;
+    SOUNDS[index] = Mix_LoadWAV(filepath);
+
+    if (SOUNDS[index] == NULL) {
+        printf("counld not load %s!\n%s\n", filepath, Mix_GetError());
+        return -1;
+    }
+
+    return 0;
+}
+
+
 // init function for loading all textures
 int load_assets() {
 
@@ -80,6 +110,10 @@ int load_assets() {
 
     for (int i = 0; i < TEXTURE_COUNT; i++) {
         if (load_png(i, texture_filepaths[i]) < 0) { all_success = -1; }
+    }
+
+    for (int i = 0; i < SOUND_COUNT; i++) {
+        if (load_wav(i, sound_filepaths[i]) < 0) { all_success = -1; }
     }
 
     return all_success;
@@ -91,5 +125,9 @@ void unload_assets() {
     
     for (int i = 0; i < TEXTURE_COUNT; i++) {
         SDL_FreeSurface(TEXTURES[i]);
+    }
+
+    for (int i = 0; i < SOUND_COUNT; i++) {
+        Mix_FreeChunk(SOUNDS[i]);
     }
 }

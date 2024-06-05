@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <stdio.h>
 
 
@@ -15,6 +16,7 @@
 #define PREVIEWBORDERSIZE 20
 
 #define TEXTURE_COUNT 38
+#define SOUND_COUNT 10
 
 // TODO
 // when adding a new texture:
@@ -66,12 +68,30 @@ typedef enum TextureIndex {
 } Texture;
 
 
+// same idea for audio
+typedef enum SoundEffect {
+    MENU_BLIP_SFX,
+    COUNTDOWN1_SFX,
+    COUNTDOWN23_SFX,
+    GAME_OVER_SFX,
+    GARBAGE_SFX,
+    HARD_DROP_SFX,
+    LINE_CLEAR_SFX,
+    SELECT_SFX,
+    SOLIDIFY_SFX,
+    LEVEL_UP_SFX
+} Sound;
+
+
 extern SDL_Surface* TEXTURES[TEXTURE_COUNT];
 extern const char* texture_filepaths[TEXTURE_COUNT];
+
+extern Mix_Chunk* SOUNDS[SOUND_COUNT];
+extern const char* sound_filepaths[SOUND_COUNT];
 
 
 //int load_png(SDL_Surface** surface, char* filepath);
 int load_png(Texture index, const char* filepath);
+int load_wav(Sound index, const char* filepath);
 int load_assets();
 void unload_assets();
-

@@ -6,8 +6,10 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include <stdlib.h>
 
+#include "assets.h"
 #include "board.h"
 #include "gamepad.h"
 #include "pieces.h"
@@ -40,8 +42,8 @@ void move_current_piece(Game* game, int frame);
 void shift_rows_down(Game* game, int row);
 int clear_lines(Game* game);
 int gravity_delay(int level);
-void piece_gravity(Game* game, int frame);
-void update_score(Game* game, int lines);
+int piece_gravity(Game* game, int frame);
+int update_score(Game* game, int lines);
 Piece randomize_piece(Game* game, Piece* piece);
 void reset_game(Game* game, int new_seed);
 void hard_drop(Game*);

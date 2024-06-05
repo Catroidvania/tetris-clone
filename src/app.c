@@ -14,11 +14,25 @@ int init_sdl() {
         return -1;
     }
 
+    // init image
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+        printf("no sdl image??? its not looking good...\n%s\n", IMG_GetError());
+        return -1;
+    }
+
+    // default audio settings
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("no sdl mixer! aw this sounds baddd\n%s\n", Mix_GetError());
+        return -1;
+    }
+
     return 0;
 }
 
 
 void quit_sdl() {
+    IMG_Quit();
+    Mix_Quit();
     SDL_Quit();
 }
 
