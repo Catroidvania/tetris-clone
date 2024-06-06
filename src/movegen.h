@@ -7,6 +7,6 @@
 void getInfo(char piece, char *info);
 char* getHeight(unsigned char *board);
 int getLegalMoves(char piece, unsigned char *board, char **moves);
-void playMove(unsigned char *board, char *move);
+void playMove(unsigned char *board, short int *score, char *move);
 
 #endif // MOVEGEN_H

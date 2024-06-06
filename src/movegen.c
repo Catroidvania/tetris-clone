@@ -99,16 +99,25 @@ int getLegalMoves(char piece, unsigned char *board, char **moves) {
 			}
         }
     }
+	if (nummoves == 0) {
+		moves[0][0] = 'X';
+		nummoves = 1;
+	}
     return nummoves;
 }
 
 
-void playMove(unsigned char *board, char *move) {
+void playMove(unsigned char *board, short int *score, char *move) {
 	
 	// plays a move on the board
 	
 	char info[37];
     getInfo(move[0], info);
+
+	if (move[0] == 'X') {
+		*score == -10000;
+		return;
+	}
 	
 
 
@@ -121,6 +130,34 @@ void playMove(unsigned char *board, char *move) {
 			setBit(board, move[2]+irow,height,1);
 		}
 	}
+	
+	// clear lines
+	char clear;
+	char numClear=0;
+	for (int i = move[3] + 3; i >= move[3]; i--) {
+		clear = 1;
+		for (char j = 0; j < 10; j++) {
+			if (isTileSet(board,j,i)==0) {
+				clear = 0;
+			}
+		}
+		if (clear == 1) {
+			for (char row = 0; row < 19; row++) {
+				for (char col = 0; col < 10; col++) {
+					setBit(board, col, row, isTileSet(board,col,row+1));
+				}
+			}
+			for (char col = 0; col < 10; col++) {
+				setBit(board,col,19,0);
+			}
+		}
+	}
+	if (numClear == 4) {
+		*score = 400;
+	} else {
+		*score = -50;
+	}
+	
 }
 
 
@@ -128,7 +165,7 @@ void playMove(unsigned char *board, char *move) {
 int main() {
     struct Bitboard board;
 	
-    initBoard(&board, 'L', 'S');
+    initBoard(&board);
 	//setBit(board.board,2,3,1);
 
 	char piece = 'J';
@@ -138,8 +175,9 @@ int main() {
         moves[i] = (char *)malloc(4 * sizeof(char));
     }
 
-	
-	setBit(board.board,0,0,1);
+	for (char i = 0; i < 8; i++) {
+		setBit(board.board,i,0,1);
+	}
 	dispBoard(board.board);
 	int nummoves = getLegalMoves(piece, board.board,moves);
 	//playMove(board.board, moves[nummoves-1]);
@@ -147,9 +185,11 @@ int main() {
 	
 	
 	for (char i = 0; i < nummoves; i++) {	
-		initBoard(&board, 'L', 'S');
-		setBit(board.board,0,0,1);
-		playMove(board.board, moves[i]);
+		initBoard(&board);
+		for (char i = 0; i < 8; i++) {
+			setBit(board.board,i,0,1);
+		}
+		playMove(board.board,&board.score, moves[i]);
 		dispBoard(board.board);
 		printf("%c %d %d %d\n",moves[i][0], moves[i][1], moves[i][2], moves[i][3]);
 		printf("\n\n\n");

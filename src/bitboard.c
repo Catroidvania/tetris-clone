@@ -24,7 +24,7 @@ int isTileSet(unsigned char *board, int col, int row) {
     return (board[index_out] & mask) != 0;
 }
 
-void setBit(unsigned char board[], int col, int row, int value) {
+void setBit(unsigned char *board, int col, int row, int value) {
     int position = 10 * row + col;
     int index_out = position / 8;
     int index_in = position % 8;
