@@ -124,14 +124,14 @@ void playMove(unsigned char *board, char *move) {
 }
 
 
-
+/*
 int main() {
     struct Bitboard board;
 	
     initBoard(&board, 'L', 'S');
 	//setBit(board.board,2,3,1);
 
-	char piece = 'O';
+	char piece = 'J';
 
 	char **moves = (char **)malloc(40 * sizeof(char *));
     for (int i = 0; i < 40; i++) {
@@ -140,7 +140,7 @@ int main() {
 
 	
 	setBit(board.board,0,0,1);
-
+	dispBoard(board.board);
 	int nummoves = getLegalMoves(piece, board.board,moves);
 	//playMove(board.board, moves[nummoves-1]);
 	//dispBoard(board.board);
@@ -148,6 +148,7 @@ int main() {
 	
 	for (char i = 0; i < nummoves; i++) {	
 		initBoard(&board, 'L', 'S');
+		setBit(board.board,0,0,1);
 		playMove(board.board, moves[i]);
 		dispBoard(board.board);
 		printf("%c %d %d %d\n",moves[i][0], moves[i][1], moves[i][2], moves[i][3]);
@@ -156,7 +157,4 @@ int main() {
 	
 	
 	return 0;
-}
-
-
-
+}*/

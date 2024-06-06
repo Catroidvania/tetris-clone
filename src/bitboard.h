@@ -11,11 +11,11 @@
 
 struct Bitboard {
     unsigned char board[25];
-    char queue[2];
     short int score;
+	char moves[3][4];
 };
 
-void initBoard(struct Bitboard *board, char queue0, char queue1);
+void initBoard(struct Bitboard *board);
 int isTileSet(unsigned char *board, int col, int row);
 void setBit(unsigned char board[], int col, int row, int value);
 void dispBoard(unsigned char board[]);

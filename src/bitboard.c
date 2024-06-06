@@ -6,13 +6,11 @@
 #include "bitboard.h" 
 
 
-void initBoard(struct Bitboard *board, char queue0, char queue1) {
+void initBoard(struct Bitboard *board) {
     // Set the board as a blank board (temporary)
     for (int i = 0; i < 25; i++) {
         board->board[i] = 0;
     }
-    board->queue[0] = queue0;
-    board->queue[1] = queue1;
     board->score = 0;
 }
 
@@ -48,6 +46,7 @@ void dispBoard(unsigned char board[]) {
         }
         printf("\n");
     }
+	printf("\n\n\n");
 }
 
 /*int main() {
