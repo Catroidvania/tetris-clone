@@ -29,9 +29,12 @@ void splitBoard(struct Bitboard *boards, char piece, int *end, int *start, int *
 			}
 			*index += 1;
 		}
-		
+
+        for (int j = 0; j < 40; j++) {
+            free(moves[j]);
+        }
+        free(moves);
 	}
-	
 }
 
 
@@ -89,6 +92,8 @@ int scoreBoard(struct Bitboard board) {
 		score -= height[i]*height[i]/10;
 	}
 	
+    free(height);
+
 	return score;
 }
 
@@ -199,6 +204,8 @@ int main() {
 	indices[7] = index;
 	
     char (*bestMove)[4] = getBest(boards, indices);
+
+    free(boards);
 
 	printf("Best Move: ");
 	printf("%c %d %d %d", (*bestMove)[0],(*bestMove)[1],(*bestMove)[2], (*bestMove)[3]);

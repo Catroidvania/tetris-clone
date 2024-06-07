@@ -103,6 +103,7 @@ int getLegalMoves(char piece, unsigned char *board, char **moves) {
 		moves[0][0] = 'X';
 		nummoves = 1;
 	}
+    free(height);
     return nummoves;
 }
 
