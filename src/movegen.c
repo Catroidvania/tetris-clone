@@ -13,8 +13,8 @@ static const char O_info[37] = {1,2,0,0,0,/*standard pos*/ 1,2,1,2,0,0,0,0, /*ro
 static const char S_info[37] = {2,3,2,0,0,/*standard pos*/ 1,1,1,2,2,2,0,0, /*rotate 1*/ 2,3,1,2,0,0,0,0,/**/0,0,0,0,0,0,0,0,/**/0,0,0,0,0,0,0,0};
 static const char Z_info[37] = {2,3,2,0,0,/*standard pos*/ 2,2,1,2,1,1,0,0, /*rotate 1*/ 1,2,2,3,0,0,0,0,/**/0,0,0,0,0,0,0,0,/**/0,0,0,0,0,0,0,0};
 static const char I_info[37] = {2,1,4,0,0,/*standard pos*/ 1,4,0,0,0,0,0,0, /*rotate 1*/ 1,1,1,1,1,1,1,1,/**/0,0,0,0,0,0,0,0,/**/0,0,0,0,0,0,0,0};
-static const char L_info[37] = {4,3,2,3,2,/*standard pos*/ 1,1,1,1,1,2,0,0, /*rotate 1*/ 1,3,1,1,0,0,0,0,/**/1,2,2,2,2,2,0,0,/**/3,3,1,3,0,0,0,0};
-static const char J_info[37] = {4,3,2,3,2,/*standard pos*/ 1,2,1,1,1,1,0,0, /*rotate 1*/ 1,3,3,3,0,0,0,0,/**/2,2,2,2,1,2,0,0,/**/1,1,1,3,0,0,0,0};
+static const char J_info[37] = {4,3,2,3,2,/*standard pos*/ 1,2,2,2,2,2,0,0, /*rotate 1*/ 3,3,1,3,0,0,0,0,/**/1,1,1,1,1,2,0,0,/**/1,3,1,1,0,0,0,0};
+static const char L_info[37] = {4,3,2,3,2,/*standard pos*/ 2,2,2,2,1,2,0,0, /*rotate 1*/ 1,1,1,3,0,0,0,0,/**/1,2,1,1,1,1,0,0,/**/1,3,3,3,0,0,0,0};
 static const char T_info[37] = {4,3,2,3,2,/*standard pos*/ 1,1,1,2,1,1,0,0, /*rotate 1*/ 1,3,2,2,0,0,0,0,/**/2,2,1,2,2,2,0,0,/**/2,2,1,3,0,0,0,0};
 
 
@@ -54,8 +54,8 @@ void getInfo(char piece, char *info) {
 
 char* getHeight(unsigned char *board) {
    	char* height = (char*)malloc(10 * sizeof(char));
-	for (char i=0; i<10; i++) {
-		for (char j=0; j<20; j++) {
+	for (int i=0; i<10; i++) {
+		for (int j=0; j<20; j++) {
 			height[i] = 19-j;
 			if (isTileSet(board,i,19-j)) {
 				height[i] = 20-j;
@@ -116,7 +116,7 @@ void playMove(unsigned char *board, short int *score, char *move) {
     getInfo(move[0], info);
 
 	if (move[0] == 'X') {
-		*score == -10000;
+		*score = -10000;
 		return;
 	}
 	
@@ -154,9 +154,9 @@ void playMove(unsigned char *board, short int *score, char *move) {
 		}
 	}
 	if (numClear == 4) {
-		*score = 400;
+		*score = 1000;
 	} else {
-		*score = -50;
+		*score = -1000;
 	}
 	
 }

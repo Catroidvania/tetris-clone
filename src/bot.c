@@ -22,10 +22,10 @@ void splitBoard(struct Bitboard *boards, char piece, int *end, int *start, int *
 
 		int nummoves = getLegalMoves(piece, boards[i].board , moves);
 
-		for (char j = 0; j < nummoves; j++) {
+		for (int j = 0; j < nummoves; j++) {
 			boards[*index] = boards[i];
 			playMove(boards[*index].board,&boards[*index].score, moves[j]);
-			for (char k = 0; k < 4; k++) {
+			for (int k = 0; k < 4; k++) {
 				boards[*index].moves[depth][k] = moves[j][k];
 			}
 			*index += 1;
@@ -46,12 +46,12 @@ int scoreBoard(struct Bitboard board) {
 
 	// get holes
 	//int holes = 0;
-	for (char i = 0; i < 10; i++) {
-		for (char j = 0; j < height[i]; j++) {
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < height[i]; j++) {
 			if (isTileSet(board.board,i,height[i]-j-1)==0) {
 				//holes += 1;
 				//printf("i: %d j: %d over: %d under: %d\n",i,height[i]-j,height[i]-j-1,j);
-				score -= (height[i]-j-1)*(height[i]-j-1) + (j*j)/2 + 10;
+				score -= (height[i]-j-1)*(height[i]-j-1)*20 + (j*j)*10 + 15;
 			}
 		}
 	}
@@ -60,7 +60,7 @@ int scoreBoard(struct Bitboard board) {
 	char gradient = 0;
 	char currentGradient = 0;
 	char maxGradient = 0;
-	for (char i = 0; i < 10; i++) {
+	for (int i = 0; i < 10; i++) {
 		if (i != 0) {
 			gradient = abs(height[i-1] - height[i]);
 			if (gradient > 1) {
@@ -79,18 +79,19 @@ int scoreBoard(struct Bitboard board) {
 			gradient = 4;
 		}
 
-		currentGradient *= gradient;
+		currentGradient += gradient;
 		if (currentGradient > maxGradient) {
 			maxGradient = currentGradient;
 		}
 		currentGradient = 0;
 	}
+    
 	// reward best well
-	score += maxGradient*5;
+	score += maxGradient;
 
 	// punish height
-	for (char i = 0; i < 10; i ++) {
-		score -= height[i]*height[i]/10;
+	for (int i = 0; i < 10; i ++) {
+		score -= height[i]*height[i]/5;
 	}
 	
     free(height);
@@ -124,12 +125,12 @@ char (*getBest(struct Bitboard *boards, int *indices))[4] {
 	char cont = 1;
 
 	while (cont) {
-		for (char i = 0; i < 2; i++) {
-			for (char j = 0; j < 4; j++) {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 4; j++) {
 				currMove[i][j] = boards[indices[0]].moves[i][j];
 			}
 		}
-		for (char i = 0; i < 7; i++) {
+		for (int i = 0; i < 7; i++) {
 			currBestScore[i] = -10000;
 			while (1) {
 				if (indices[6] >= maxInt) {
@@ -154,12 +155,12 @@ char (*getBest(struct Bitboard *boards, int *indices))[4] {
 			break;
 		}
 		currScore = 0;
-		for (char i = 0; i < 7; i++) {
+		for (int i = 0; i < 7; i++) {
 			currScore += currBestScore[i];
 		}
 		if (currScore > bestScore) {
 			bestScore = currScore;
-			for (char i = 0; i < 4; i++) {
+			for (int i = 0; i < 4; i++) {
 				bestMove[i] = currMove[0][i];
 			}
 		}
@@ -169,11 +170,11 @@ char (*getBest(struct Bitboard *boards, int *indices))[4] {
 }
 
 
-char (*getBot(struct Bitboard board,char pieces[2])) {
+char *getBot(struct Bitboard board,char pieces[2]) {
 	int start = 0;
 	int end = 1;
 	int index = 1;
-	int indices[7];
+	int indices[8];
 
 	struct Bitboard *boards = (struct Bitboard *)malloc(449640 * sizeof(struct Bitboard));
     if (boards == NULL) {
@@ -198,14 +199,17 @@ char (*getBot(struct Bitboard board,char pieces[2])) {
 
     free(boards);
 
+    /*
 	printf("Best Move: ");
 	printf("%c %d %d %d", (*bestMove)[0],(*bestMove)[1],(*bestMove)[2], (*bestMove)[3]);
     printf("\n");
+    
+    playMove(board.board,&board.score,bestMove);
+    dispBoard(board.board);*/
 
 	return *bestMove;
 }
-
-
+/*
 int main() {
 
     struct Bitboard board;
@@ -215,7 +219,7 @@ int main() {
 
 	getBot(board,pieces);
 	
-	/*
+	
 	for (int i = index-5; i < index; i++) {
 		for (int j = 0; j < 3; j++) {
 			printf("%d: %c %d %d %d\n",j,boards[i].moves[j][0], boards[i].moves[j][1], boards[i].moves[j][2], boards[i].moves[j][3]);
@@ -225,6 +229,60 @@ int main() {
 		dispBoard(boards[i].board);
 	}8?
 	
-	*/
+	
 	return 0;
 }
+*/
+
+/*
+char randomize_piece() {
+    char new_piece;
+    switch (rand() % 7) {
+    case 0:
+        new_piece = 'O';
+        break;
+    case 1:
+        new_piece = 'L';
+        break;
+    case 2:
+        new_piece = 'I';
+        break;
+    case 3:
+        new_piece = 'T';
+        break;
+    case 4:
+        new_piece = 'S';
+        break;
+    case 5:
+        new_piece = 'J';
+        break;
+    case 6:
+        new_piece = 'Z';
+        break;
+    }
+
+    return new_piece;
+}
+
+int main() {
+
+    struct Bitboard board;
+	
+    initBoard(&board);
+	char pieces[2];
+    char *move;
+
+    pieces[0] = randomize_piece();
+    pieces[1] = randomize_piece();
+
+    for (int i = 0; i < 1000; i++) {
+        move = getBot(board,pieces);
+        playMove(&board.board, &board.score, move);
+        dispBoard(board.board);
+
+        pieces[0] = pieces[1];
+        pieces[1] = randomize_piece();
+    }
+
+    return 0;
+}*/

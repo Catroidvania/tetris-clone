@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "bitboard.h"
 #include "game.h"
 
 
@@ -39,6 +40,9 @@ typedef struct Application {
     Game game, cpu_game;
     int rng_seed, vs_cpu, local_2p, player_win;
 
+    struct Bitboard bitboard;
+    char bot_next[2];
+
 } App;
 
 
@@ -46,4 +50,5 @@ int init_sdl();
 void quit_sdl();
 int init_app(App* app, int rng_seed);
 void end_app(App* app);
+void update_bot(App* app);
 

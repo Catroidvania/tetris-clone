@@ -67,6 +67,8 @@ int init_app(App* app, int rng_seed) {
     app->rng_seed = rng_seed;
     init_game(&app->game, rng_seed);
     init_game(&app->cpu_game, rng_seed);
+    
+    initBoard(&app->bitboard);
 
     app->screen = MAINMENU;
     app->vs_cpu = 0;
@@ -88,4 +90,20 @@ void end_app(App* app) {
 
     app->window = NULL;
     app->window_surface = NULL;
+}
+
+
+// updates the bitboard and next pieces
+void update_bot(App* app) {
+    
+    if (app == NULL) { return; }
+
+    for (int r = 0; r < BOARDHEIGHT; r++) {
+        for (int c = 0; c < BOARDWIDTH; c++) {
+            setBit(app->bitboard.board, c, r, app->cpu_game.board.blocks[POINT(c, r, BOARDWIDTH)] != BLANK);
+        }
+    }
+
+    app->bot_next[0] = app->cpu_game.current_piece.type;
+    app->bot_next[1] = app->cpu_game.next_piece.type;
 }

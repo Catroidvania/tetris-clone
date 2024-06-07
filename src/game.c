@@ -29,6 +29,7 @@ int init_game(Game* game, int seed) {
     game->lines_cleared = 0;
     game->soft_drop_bonus = 0;
     game->garbage = 0;
+    game->cpu_should_think = 1;
 
     return 0;
 }
@@ -41,6 +42,7 @@ void swap_pieces(Game* game) {
 
     game->current_piece = game->next_piece;
     game->next_piece = randomize_piece(game, &game->current_piece);
+    game->cpu_should_think = 1;
 }
 
 
@@ -344,6 +346,7 @@ Piece randomize_piece(Game* game, Piece* piece) {
         }
     }
 
+
     return new_piece;
 }
 
@@ -420,6 +423,9 @@ int send_garbage(Game* from, Game* to, int lines) {
         int extra = -(from->garbage - lines);
         from->garbage = 0;
         to->garbage += extra;
+        if (to->garbage > 20) {
+            to->garbage = 20;
+        }
         return extra;
     }
 }
@@ -459,4 +465,66 @@ void spawn_garbage(Game* game) {
     game->garbage = 0;
 
     Mix_PlayChannel(-1, SOUNDS[GARBAGE_SFX], 0);
+}
+
+
+// moves the current piece based on the output of the bot
+void move_bot_piece(Game* game, char* stupid_bozo_move_format) {
+    
+    char* move = stupid_bozo_move_format;
+
+    if (game == NULL) { return; }
+    if (move == NULL) { return; }
+
+    int x = game->current_piece.x;
+    //int y = game->current_piece.y;
+    int rotation = game->current_piece.rotation;
+    int target_x = move[2];
+    int target_rotation = move[1];
+
+    // alas we should have used a unified piece format lmaoo
+    game->keystates = RESET_GAMEPAD; // TODO
+    switch (move[0]) {
+    case 'I':
+        target_rotation = !target_rotation;
+
+        if (target_rotation) { target_x -= 2; }
+        break;
+    case 'O':       
+        target_x--;
+        break;
+    case 'T':
+        target_rotation += 2;
+        if (target_rotation > 3) {
+            target_rotation -= 4;
+        }
+        if (target_rotation == 3) {
+            target_x--;
+        }
+        break;
+    case 'Z':
+    case 'S':
+        if (target_rotation) { target_x--; }
+        break;
+    case 'L':
+    case 'J':
+        if (target_rotation == 3) { target_x--; }
+        break;
+    default:
+        break;
+    }
+
+    if (rotation != target_rotation) {
+        rotate_piece_left(&game->current_piece, &game->board);
+    } else if (x > target_x) {
+        //game->keystates.button_right = 0;
+        game->keystates.button_left = !game->keystates.button_left;
+    } else if (x < target_x) {
+        //game->keystates.button_left = 0;
+        game->keystates.button_right = !game->keystates.button_right;
+    }
+
+    if (x == target_x && rotation == target_rotation) {
+        game->keystates.button_up = 1;
+    }
 }

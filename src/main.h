@@ -15,8 +15,12 @@
 #include "app.h"
 #include "assets.h"
 #include "board.h"
+#include "bot.h"
 #include "game.h"
 #include "gamepad.h"
 #include "pieces.h"
 #include "rendering.h"
 #include "selector.h"
+
+
+int bot_thread(void* data);

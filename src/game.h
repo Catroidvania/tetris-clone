@@ -27,7 +27,7 @@ typedef struct Game {
     Gamepad keystates;
     Piece current_piece, next_piece;
     RNGState rng_state;
-    int score, level, lines_cleared, soft_drop_bonus, garbage;
+    int score, level, lines_cleared, soft_drop_bonus, garbage, cpu_should_think;
 
 } Game;
 
@@ -48,4 +48,5 @@ Piece randomize_piece(Game* game, Piece* piece);
 void reset_game(Game* game, int new_seed);
 void hard_drop(Game*);
 int send_garbage(Game* from, Game* to, int lines);
-void spawn_garbage(Game* game); 
+void spawn_garbage(Game* game);
+void move_bot_piece(Game* game, char* stupid_bozo_move_format);

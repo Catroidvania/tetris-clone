@@ -6,16 +6,32 @@
 #include "main.h"
 
 
+// declarations
+App application;
+SDL_Event event;
+
+/*
+SDL_Thread* bot_t;
+
+*/
+/*
+int bot_thread(void* data) {
+    update_bot(&application);
+    botmove = getBot(application.bitboard, application.bot_next);
+    printf("%c %d %d %d\n", botmove[0], botmove[1], botmove[2], botmove[3]);
+    move_bot_piece(&application.cpu_game, botmove);
+}*/
+
+
 int main() {
 
-    // declarations
-    App application;
-    SDL_Event event;
-
+    // more declarations
     int run = 1;
     int start_ms, end_ms, dt;
     int frame = 0, countdown_frame = 0, countdown_counter = 2;
     int junk = 0, confirm = 0;
+
+    char *botmove;
 
     srand(time(NULL));
 
@@ -60,6 +76,20 @@ int main() {
 
     // update game stuff
     if (application.screen == GAMEPLAYING) {
+
+        if (!application.local_2p && application.vs_cpu) {
+            //SDL_CreateThread(bot_thread, NULL);
+
+            if (application.cpu_game.cpu_should_think) {
+                application.cpu_game.cpu_should_think = 0;
+                update_bot(&application);
+                botmove = getBot(application.bitboard, application.bot_next);
+                //printf("%c %d %d %d\n", botmove[0], botmove[1], botmove[2], botmove[3]);
+            }
+                
+            move_bot_piece(&application.cpu_game, botmove);
+        }
+        //bot_thread(NULL);
         
         // gameover check
         if (piece_collision(&application.game.current_piece, &application.game.board)) {
@@ -162,7 +192,11 @@ int main() {
             Mix_PlayChannel(-1, SOUNDS[SELECT_SFX], 0);
         }
     }
-
+/*
+    if (!application.local_2p && application.vs_cpu) {
+        SDL_WaitThread(bot_t, NULL);
+    }
+*/
     // clear for drawing
     clear_window(&application);
 
