@@ -9,6 +9,7 @@
 # include <string.h>
 # include "bitboard.h"
 # include "movegen.h"
+# include "bot.h"
 
 
 void splitBoard(struct Bitboard *boards, char piece, int *end, int *start, int *index, int depth) {
@@ -29,9 +30,12 @@ void splitBoard(struct Bitboard *boards, char piece, int *end, int *start, int *
 			}
 			*index += 1;
 		}
-		
+
+        for (int j = 0; j < 40; j++) {
+            free(moves[j]);
+        }
+        free(moves);
 	}
-	
 }
 
 
@@ -89,6 +93,8 @@ int scoreBoard(struct Bitboard board) {
 		score -= height[i]*height[i]/10;
 	}
 	
+    free(height);
+
 	return score;
 }
 
@@ -114,9 +120,8 @@ char (*getBest(struct Bitboard *boards, int *indices))[4] {
 	int currBestScore[7];
 	int currScore;
 	int bestScore = -10000;
-	int maxInt = indices[6];
+	int maxInt = indices[7];
 	char cont = 1;
-		
 
 	while (cont) {
 		for (char i = 0; i < 2; i++) {
@@ -124,24 +129,29 @@ char (*getBest(struct Bitboard *boards, int *indices))[4] {
 				currMove[i][j] = boards[indices[0]].moves[i][j];
 			}
 		}
-		printf("%d",indices[7]);
 		for (char i = 0; i < 7; i++) {
 			currBestScore[i] = -10000;
 			while (1) {
-				if (i == 6 && indices[6] == maxInt) {
+				if (indices[6] >= maxInt) {
 					cont = 0;
 					break;
 				}
-				if (arraysAreEqual(boards[indices[i]].moves,currMove)) {
+				if (arraysAreEqual(boards[indices[i]].moves, currMove)) {
 					currScore = scoreBoard(boards[indices[i]]);
 					if (currScore > currBestScore[i]) {
 						currBestScore[i] = currScore;
-						indices[i] += 1;
 					}
+					indices[i]++;
 				} else {
 					break;
 				}
 			}
+			if (cont == 0) {
+				break;
+			}
+		}
+		if (cont == 0) {
+			break;
 		}
 		currScore = 0;
 		for (char i = 0; i < 7; i++) {
@@ -159,15 +169,7 @@ char (*getBest(struct Bitboard *boards, int *indices))[4] {
 }
 
 
-
-
-
-int main() {
-
-    struct Bitboard board;
-	
-    initBoard(&board);
-	
+char (*getBot(struct Bitboard board,char pieces[2])) {
 	int start = 0;
 	int end = 1;
 	int index = 1;
@@ -176,10 +178,8 @@ int main() {
 	struct Bitboard *boards = (struct Bitboard *)malloc(449640 * sizeof(struct Bitboard));
     if (boards == NULL) {
         perror("Failed to allocate memory");
-        return EXIT_FAILURE;
 	}
 	boards[0] = board;
-	char pieces[2] = {'L','J'};
 
 	for (int i = 0; i < 2; i++) {
 		splitBoard(boards,pieces[i],&end,&start,&index,i);
@@ -192,17 +192,29 @@ int main() {
 		indices[i] = index;
 		splitBoard(boards,allpieces[i],&end,&start,&index,2);
 	}
-
 	indices[7] = index;
 	
     char (*bestMove)[4] = getBest(boards, indices);
 
+    free(boards);
+
 	printf("Best Move: ");
-    for (int i = 0; i < 4; ++i) {
-        printf("%c ", (*bestMove)[i]);
-    }
+	printf("%c %d %d %d", (*bestMove)[0],(*bestMove)[1],(*bestMove)[2], (*bestMove)[3]);
     printf("\n");
 
+	return *bestMove;
+}
+
+
+int main() {
+
+    struct Bitboard board;
+	
+    initBoard(&board);
+	char pieces[2] = {'I','L'};
+
+	getBot(board,pieces);
+	
 	/*
 	for (int i = index-5; i < index; i++) {
 		for (int j = 0; j < 3; j++) {
