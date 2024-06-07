@@ -1,0 +1,15 @@
+// bitboard.c
+# include <stdio.h>
+
+struct Board {
+    unsigned long long part1 : 64;  
+    unsigned long long part2 : 64;  
+    unsigned long long part3 : 64;  
+    unsigned long long part4 : 8;   
+};
+
+int main() {
+    struct Board board;
+    printf(%zu,sizeof(board));
+    return 0;
+}
