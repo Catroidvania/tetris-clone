@@ -114,9 +114,8 @@ char (*getBest(struct Bitboard *boards, int *indices))[4] {
 	int currBestScore[7];
 	int currScore;
 	int bestScore = -10000;
-	int maxInt = indices[6];
+	int maxInt = indices[7];
 	char cont = 1;
-		
 
 	while (cont) {
 		for (char i = 0; i < 2; i++) {
@@ -124,24 +123,29 @@ char (*getBest(struct Bitboard *boards, int *indices))[4] {
 				currMove[i][j] = boards[indices[0]].moves[i][j];
 			}
 		}
-		printf("%d",indices[7]);
 		for (char i = 0; i < 7; i++) {
 			currBestScore[i] = -10000;
 			while (1) {
-				if (i == 6 && indices[6] == maxInt) {
+				if (indices[6] >= maxInt) {
 					cont = 0;
 					break;
 				}
-				if (arraysAreEqual(boards[indices[i]].moves,currMove)) {
+				if (arraysAreEqual(boards[indices[i]].moves, currMove)) {
 					currScore = scoreBoard(boards[indices[i]]);
 					if (currScore > currBestScore[i]) {
 						currBestScore[i] = currScore;
-						indices[i] += 1;
 					}
+					indices[i]++;
 				} else {
 					break;
 				}
 			}
+			if (cont == 0) {
+				break;
+			}
+		}
+		if (cont == 0) {
+			break;
 		}
 		currScore = 0;
 		for (char i = 0; i < 7; i++) {
@@ -179,7 +183,7 @@ int main() {
         return EXIT_FAILURE;
 	}
 	boards[0] = board;
-	char pieces[2] = {'L','J'};
+	char pieces[2] = {'I','J'};
 
 	for (int i = 0; i < 2; i++) {
 		splitBoard(boards,pieces[i],&end,&start,&index,i);
@@ -192,15 +196,12 @@ int main() {
 		indices[i] = index;
 		splitBoard(boards,allpieces[i],&end,&start,&index,2);
 	}
-
 	indices[7] = index;
 	
     char (*bestMove)[4] = getBest(boards, indices);
 
 	printf("Best Move: ");
-    for (int i = 0; i < 4; ++i) {
-        printf("%c ", (*bestMove)[i]);
-    }
+	printf("%c %d %d %d", (*bestMove)[0],(*bestMove)[1],(*bestMove)[2], (*bestMove)[3]);
     printf("\n");
 
 	/*
