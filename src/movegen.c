@@ -154,9 +154,11 @@ void playMove(unsigned char *board, short int *score, char *move) {
 		}
 	}
 	if (numClear == 4) {
-		*score = 1000;
-	} else {
-		*score = -1000;
+		*score = 400;
+	} else if (numClear == 3) {
+        *score = 50;
+    } else if (numClear == 1) {
+		*score = -50;
 	}
 	
 }

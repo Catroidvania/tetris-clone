@@ -6,6 +6,7 @@
 #pragma once
 
 #include <SDL.h>
+#include <SDL_thread.h>
 #include <SDL_mixer.h>
 #include <stdlib.h>
 
@@ -27,13 +28,14 @@ typedef struct Game {
     Gamepad keystates;
     Piece current_piece, next_piece;
     RNGState rng_state;
-    int score, level, lines_cleared, soft_drop_bonus, garbage, cpu_should_think;
+    int score, level, lines_cleared, soft_drop_bonus, garbage, cpu_should_think, cpu_should_move;
 
 } Game;
 
 
 // frame delays for levels 0 - 9, higher levels are handed by the function gravity_delay
 extern const int gravity_delay_values[10];
+extern SDL_mutex* can_move_m;
 
 
 int init_game(Game* game, int seed);

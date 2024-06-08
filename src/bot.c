@@ -91,7 +91,10 @@ int scoreBoard(struct Bitboard board) {
 
 	// punish height
 	for (int i = 0; i < 10; i ++) {
-		score -= height[i]*height[i]/5;
+		score -= height[i]*height[i];
+        if (height[i] > 10) {
+            score -= 300;
+        }
 	}
 	
     free(height);

@@ -10,17 +10,22 @@
 App application;
 SDL_Event event;
 
-/*
-SDL_Thread* bot_t;
+char *botmove;
 
-*/
-/*
+SDL_Thread* bot_t;
+int thread_open = 0, cpu_think_cooldown = 0, cpu_move_cooldown = 0;
+
+
 int bot_thread(void* data) {
     update_bot(&application);
     botmove = getBot(application.bitboard, application.bot_next);
+    thread_open = 0;
+    SDL_LockMutex(can_move_m);
+    application.cpu_game.cpu_should_move = 1;
+    SDL_UnlockMutex(can_move_m);
     printf("%c %d %d %d\n", botmove[0], botmove[1], botmove[2], botmove[3]);
-    move_bot_piece(&application.cpu_game, botmove);
-}*/
+    return 1;
+}
 
 
 int main() {
@@ -30,8 +35,6 @@ int main() {
     int start_ms, end_ms, dt;
     int frame = 0, countdown_frame = 0, countdown_counter = 2;
     int junk = 0, confirm = 0;
-
-    char *botmove;
 
     srand(time(NULL));
 
@@ -43,6 +46,9 @@ int main() {
 
     // create window
     if (init_app(&application, rand()) < 0) { return -1; }
+
+    can_move_m = SDL_CreateMutex();
+    SDL_UnlockMutex(can_move_m);
 
     // game loop
     while (run) {
@@ -77,19 +83,16 @@ int main() {
     // update game stuff
     if (application.screen == GAMEPLAYING) {
 
-        if (!application.local_2p && application.vs_cpu) {
-            //SDL_CreateThread(bot_thread, NULL);
-
-            if (application.cpu_game.cpu_should_think) {
+        if (!application.local_2p && application.vs_cpu && application.cpu_game.cpu_should_think) {
+            if (cpu_think_cooldown) {
+                cpu_think_cooldown--;
+            } else {
                 application.cpu_game.cpu_should_think = 0;
-                update_bot(&application);
-                botmove = getBot(application.bitboard, application.bot_next);
-                //printf("%c %d %d %d\n", botmove[0], botmove[1], botmove[2], botmove[3]);
+                thread_open = 1;
+                cpu_think_cooldown = CPUTHINKDELAY;
+                bot_t = SDL_CreateThread(bot_thread, "bot_t", NULL);
             }
-                
-            move_bot_piece(&application.cpu_game, botmove);
         }
-        //bot_thread(NULL);
         
         // gameover check
         if (piece_collision(&application.game.current_piece, &application.game.board)) {
@@ -130,6 +133,20 @@ int main() {
 
         if (application.vs_cpu) {
             send_garbage(&application.game, &application.cpu_game, junk-1);
+            
+            if (!application.local_2p) {
+                SDL_LockMutex(can_move_m);
+                application.cpu_game.keystates = RESET_GAMEPAD;
+                if (application.cpu_game.cpu_should_move) {
+                    if (cpu_move_cooldown) {
+                        cpu_move_cooldown--;
+                    } else {
+                        cpu_move_cooldown = CPUMOVEDELAY;
+                        move_bot_piece(&application.cpu_game, botmove);
+                    }
+                }
+                SDL_UnlockMutex(can_move_m);
+            }
 
             move_current_piece(&application.cpu_game, frame);
             if (piece_gravity(&application.cpu_game, frame)) {
@@ -162,6 +179,9 @@ int main() {
                 application.vs_cpu = 1;
                 application.player_win = 0;
                 application.screen = GAMECOUNTDOWN;
+                cpu_think_cooldown = 0;
+                cpu_move_cooldown = 0;
+                SDL_UnlockMutex(can_move_m);
                 if (SDL_GetModState()) {
                     application.local_2p = 1;
                     application.game.keystates = LOCAL1_GAMEPAD;
@@ -192,11 +212,12 @@ int main() {
             Mix_PlayChannel(-1, SOUNDS[SELECT_SFX], 0);
         }
     }
-/*
-    if (!application.local_2p && application.vs_cpu) {
+
+    if (thread_open) {
         SDL_WaitThread(bot_t, NULL);
+        thread_open = 0;
     }
-*/
+
     // clear for drawing
     clear_window(&application);
 
@@ -298,6 +319,7 @@ int main() {
     }
 
     // uninit sdl stuff
+    SDL_DestroyMutex(can_move_m);
     end_app(&application);
     unload_assets();
     quit_sdl();

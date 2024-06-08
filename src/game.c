@@ -7,6 +7,7 @@
 
 
 const int gravity_delay_values[10] = {48, 43, 38, 33, 28, 23, 18, 13, 8, 6};
+SDL_mutex* can_move_m;
 
 
 // initialises a game of tetris
@@ -30,6 +31,7 @@ int init_game(Game* game, int seed) {
     game->soft_drop_bonus = 0;
     game->garbage = 0;
     game->cpu_should_think = 1;
+    game->cpu_should_move = 0;
 
     return 0;
 }
@@ -42,7 +44,6 @@ void swap_pieces(Game* game) {
 
     game->current_piece = game->next_piece;
     game->next_piece = randomize_piece(game, &game->current_piece);
-    game->cpu_should_think = 1;
 }
 
 
@@ -364,7 +365,10 @@ void reset_game(Game* game, int new_seed) {
     game->lines_cleared = 0;
     game->score = 0;
     game->soft_drop_bonus = 0;
+    game->garbage = 0;
     game->keystates = RESET_GAMEPAD;
+    game->cpu_should_think = 1;
+    game->cpu_should_move = 0;
 }
 
 
@@ -483,7 +487,6 @@ void move_bot_piece(Game* game, char* stupid_bozo_move_format) {
     int target_rotation = move[1];
 
     // alas we should have used a unified piece format lmaoo
-    game->keystates = RESET_GAMEPAD; // TODO
     switch (move[0]) {
     case 'I':
         target_rotation = !target_rotation;
@@ -515,16 +518,18 @@ void move_bot_piece(Game* game, char* stupid_bozo_move_format) {
     }
 
     if (rotation != target_rotation) {
-        rotate_piece_left(&game->current_piece, &game->board);
+        game->keystates.button_a = !game->keystates.button_a;
+        //rotate_piece_right(&game->current_piece, &game->board);
     } else if (x > target_x) {
-        //game->keystates.button_right = 0;
         game->keystates.button_left = !game->keystates.button_left;
     } else if (x < target_x) {
-        //game->keystates.button_left = 0;
         game->keystates.button_right = !game->keystates.button_right;
-    }
-
-    if (x == target_x && rotation == target_rotation) {
+    } else if (x == target_x && rotation == target_rotation) {
         game->keystates.button_up = 1;
+        game->cpu_should_think = 1;
+        SDL_LockMutex(can_move_m);
+        game->cpu_should_move = 0;
+        SDL_UnlockMutex(can_move_m);
     }
 }
+

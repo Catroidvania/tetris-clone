@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 #include <SDL_timer.h>
+#include <SDL_thread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -22,5 +23,7 @@
 #include "rendering.h"
 #include "selector.h"
 
+#define CPUTHINKDELAY 60
+#define CPUMOVEDELAY 2
 
 int bot_thread(void* data);
