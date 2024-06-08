@@ -438,6 +438,8 @@ int send_garbage(Game* from, Game* to, int lines) {
 // spawns garbage rows at the bottom of the screen
 void spawn_garbage(Game* game) {
     
+    static int gap = 0;
+
     if (game == NULL) { return; }
     if (game->garbage < 1) { return; }
 
@@ -452,12 +454,12 @@ void spawn_garbage(Game* game) {
     }
 
     // this doesnt need to be prng since two players should not be playing identical anyway
-    int gap = rand() % 10;
+    if (!gap) { gap = rand() % 10; }
 
     for (int r = 0; r < game->garbage; r++) {
         // randomise the garbage gap a bit
         // TODO this needs to be tweaked to see how much it should vary
-        if (!(rand() % 7)) {
+        if (!(rand() % 5)) {
             gap = rand() % 10;
         }
         for (int c = 0; c < BOARDWIDTH; c++) {

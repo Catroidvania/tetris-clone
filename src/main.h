@@ -23,7 +23,7 @@
 #include "rendering.h"
 #include "selector.h"
 
-#define CPUTHINKDELAY 0
-#define CPUMOVEDELAY 0
+#define CPUTHINKDELAY 5
+#define CPUMOVEDELAY 1
 
 int bot_thread(void* data);

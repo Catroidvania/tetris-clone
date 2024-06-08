@@ -135,7 +135,7 @@ void playMove(unsigned char *board, short int *score, char *move) {
 	// clear lines
 	char clear;
 	char numClear=0;
-	for (int i = move[3] + 3; i >= move[3]; i--) {
+	for (int i = move[3] + 3; i >= move[3]-1; i--) {
 		clear = 1;
 		for (char j = 0; j < 10; j++) {
 			if (isTileSet(board,j,i)==0) {
