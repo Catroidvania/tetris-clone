@@ -23,7 +23,7 @@ int bot_thread(void* data) {
     SDL_LockMutex(can_move_m);
     application.cpu_game.cpu_should_move = 1;
     SDL_UnlockMutex(can_move_m);
-    printf("%c %d %d %d\n", botmove[0], botmove[1], botmove[2], botmove[3]);
+    //printf("%c %d %d %d\n", botmove[0], botmove[1], botmove[2], botmove[3]);
     return 1;
 }
 
@@ -83,7 +83,7 @@ int main() {
     // update game stuff
     if (application.screen == GAMEPLAYING) {
 
-        if (!application.local_2p && application.vs_cpu && application.cpu_game.cpu_should_think) {
+        if (((!application.local_2p && application.vs_cpu) || application.bot_sp) && application.cpu_game.cpu_should_think) {
             if (cpu_think_cooldown) {
                 cpu_think_cooldown--;
             } else {
@@ -95,7 +95,7 @@ int main() {
         }
         
         // gameover check
-        if (piece_collision(&application.game.current_piece, &application.game.board)) {
+        if (piece_collision(&application.game.current_piece, &application.game.board) && !application.bot_sp) {
             application.screen = GAMEOVER;
             if (application.local_2p) {
                 application.game.keystates = LOCAL1_GAMEPAD;
@@ -107,7 +107,8 @@ int main() {
             Mix_PlayChannel(-1, SOUNDS[GAME_OVER_SFX], 0);
         }
 
-        if (application.vs_cpu && piece_collision(&application.cpu_game.current_piece, &application.cpu_game.board)) {
+        if ((application.vs_cpu || application.bot_sp) && piece_collision(&application.cpu_game.current_piece, &application.cpu_game.board)) {
+            confirm = 0;
             application.screen = GAMEOVER;
             if (application.local_2p) {
                 application.game.keystates = LOCAL1_GAMEPAD;
@@ -131,7 +132,7 @@ int main() {
             Mix_PlayChannel(-1, SOUNDS[LINE_CLEAR_SFX], 0);
         }
 
-        if (application.vs_cpu) {
+        if (application.vs_cpu || application.bot_sp) {
             send_garbage(&application.game, &application.cpu_game, junk-1);
             
             if (!application.local_2p) {
@@ -152,6 +153,7 @@ int main() {
             if (piece_gravity(&application.cpu_game, frame)) {
                 Mix_PlayChannel(-1, SOUNDS[SOLIDIFY_SFX], 0);
             }
+
             junk = clear_lines(&application.cpu_game);
             update_score(&application.cpu_game, junk);
 
@@ -172,11 +174,21 @@ int main() {
                 application.vs_cpu = 0;
                 application.player_win = 0;
                 application.screen = GAMECOUNTDOWN;
+                cpu_think_cooldown = 0;
+                cpu_move_cooldown = 0;
+                if (SDL_GetModState()) {
+                    application.bot_sp = 1;
+                    reset_game(&application.cpu_game, application.rng_seed);
+                } else {
+                    application.bot_sp = 0;
+                }
+
                 Mix_PlayChannel(-1, SOUNDS[COUNTDOWN23_SFX], 0);
             } else if (MAIN_MENU_SELECTOR.current == &VS_CPU_BUTTON) {
                 reset_game(&application.game, application.rng_seed);
                 reset_game(&application.cpu_game, application.rng_seed);
                 application.vs_cpu = 1;
+                application.bot_sp = 0;
                 application.player_win = 0;
                 application.screen = GAMECOUNTDOWN;
                 cpu_think_cooldown = 0;
@@ -197,6 +209,7 @@ int main() {
         }
 
         update_selected(&MAIN_MENU_SELECTOR, &application.game.keystates);
+
         if (application.local_2p) {
             application.game.keystates = LOCAL1_GAMEPAD;
             application.cpu_game.keystates = LOCAL2_GAMEPAD;
@@ -213,10 +226,10 @@ int main() {
         }
     }
 
-    if (thread_open) {
+    /*if (thread_open) {
         SDL_WaitThread(bot_t, NULL);
         thread_open = 0;
-    }
+    }*/
 
     // clear for drawing
     clear_window(&application);
@@ -226,12 +239,20 @@ int main() {
 
         // draw stuff
         if (!application.vs_cpu) {
-            draw_incoming(&application.game, application.window_surface, SPBOARDX, SPBOARDY);
-            draw_board(&application.game.board, application.window_surface, SPBOARDX, SPBOARDY);
-            draw_stats(&application.game, application.window_surface, SPSTATSX, SPSTATSY);
-            draw_preview(&application.game, application.window_surface, SPPREVIEWX, SPPREVIEWY);
-            draw_ghost(&application.game, application.window_surface, SPBOARDX, SPBOARDY);
-            draw_piece(&application.game.current_piece, application.window_surface, SPBOARDX, SPBOARDY);
+            Game* current_game;
+            if (!application.bot_sp) {
+                current_game = &application.game;
+            } else {
+                current_game = &application.cpu_game;
+            }
+
+            draw_incoming(current_game, application.window_surface, SPBOARDX, SPBOARDY);
+            draw_board(&current_game->board, application.window_surface, SPBOARDX, SPBOARDY);
+            draw_stats(current_game, application.window_surface, SPSTATSX, SPSTATSY);
+            draw_preview(current_game, application.window_surface, SPPREVIEWX, SPPREVIEWY);
+            draw_ghost(current_game, application.window_surface, SPBOARDX, SPBOARDY);
+            draw_piece(&current_game->current_piece, application.window_surface, SPBOARDX, SPBOARDY);
+
         } else {
             // player
             draw_incoming(&application.game, application.window_surface, VSBOARDX, VSBOARDY);

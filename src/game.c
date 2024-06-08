@@ -489,21 +489,13 @@ void move_bot_piece(Game* game, char* stupid_bozo_move_format) {
     // alas we should have used a unified piece format lmaoo
     switch (move[0]) {
     case 'I':
-        target_rotation = !target_rotation;
-
         if (target_rotation) { target_x -= 2; }
         break;
     case 'O':       
         target_x--;
         break;
     case 'T':
-        target_rotation += 2;
-        if (target_rotation > 3) {
-            target_rotation -= 4;
-        }
-        if (target_rotation == 3) {
-            target_x--;
-        }
+        if (target_rotation == 3) { target_x--; }
         break;
     case 'Z':
     case 'S':
@@ -517,9 +509,10 @@ void move_bot_piece(Game* game, char* stupid_bozo_move_format) {
         break;
     }
 
-    if (rotation != target_rotation) {
+    if (rotation > target_rotation) {
         game->keystates.button_a = !game->keystates.button_a;
-        //rotate_piece_right(&game->current_piece, &game->board);
+    } else if (rotation < target_rotation) {
+        game->keystates.button_b = !game->keystates.button_b;
     } else if (x > target_x) {
         game->keystates.button_left = !game->keystates.button_left;
     } else if (x < target_x) {

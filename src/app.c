@@ -74,6 +74,7 @@ int init_app(App* app, int rng_seed) {
     app->vs_cpu = 0;
     app->player_win = 0;
     app->local_2p = 0;
+    app->bot_sp = 0;
 
     return 0;
 }

@@ -38,7 +38,7 @@ typedef struct Application {
     Screen screen;
 
     Game game, cpu_game;
-    int rng_seed, vs_cpu, local_2p, player_win;
+    int rng_seed, vs_cpu, local_2p, player_win, bot_sp;
 
     struct Bitboard bitboard;
     char bot_next[2];
